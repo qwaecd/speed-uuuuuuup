@@ -66,7 +66,7 @@ public class RacePointCommands {
     }
 
     private static int editRaceTrack(CommandContext<CommandSourceStack> context, String name) {
-        RaceTrack raceTrack = RaceTrackManager.getRaceTrack(name);
+        RaceTrack raceTrack = RaceTrackManager.getRaceTrack(name, context.getSource().getLevel());
         if (raceTrack != null) {
             RaceTrackManager.setEditingRaceTrack(name);
             context.getSource().sendSuccess(() -> Component.literal("Now editing " + name), false);
@@ -78,7 +78,7 @@ public class RacePointCommands {
 
     private static int addPoint(CommandContext<CommandSourceStack> context, int kind ,BlockPos startPos, BlockPos endPos) {
         //kind: 0 for start, 1 for end, 2 for checkpoint
-        RaceTrack raceTrack = RaceTrackManager.getRaceTrack(RaceTrackManager.getEditingRaceTrack());
+        RaceTrack raceTrack = RaceTrackManager.getRaceTrack(RaceTrackManager.getEditingRaceTrack(), context.getSource().getLevel());
         if(raceTrack == null) {
             context.getSource().sendSuccess(() -> Component.literal("You are not editing any RaceTrack."), false);
             return 0;
@@ -108,7 +108,7 @@ public class RacePointCommands {
     }
 
     private static int addPointAt(CommandContext<CommandSourceStack> context, BlockPos startPos, BlockPos endPos, int index) {
-        RaceTrack raceTrack = RaceTrackManager.getRaceTrack(RaceTrackManager.getEditingRaceTrack());
+        RaceTrack raceTrack = RaceTrackManager.getRaceTrack(RaceTrackManager.getEditingRaceTrack(), context.getSource().getLevel());
         if(raceTrack == null) {
             context.getSource().sendSuccess(() -> Component.literal("You are not editing any RaceTrack."), false);
             return 0;
@@ -124,7 +124,7 @@ public class RacePointCommands {
     }
 
     private static int removePoint(CommandContext<CommandSourceStack> context, int index) {
-        RaceTrack raceTrack = RaceTrackManager.getRaceTrack(RaceTrackManager.getEditingRaceTrack());
+        RaceTrack raceTrack = RaceTrackManager.getRaceTrack(RaceTrackManager.getEditingRaceTrack(), context.getSource().getLevel());
         if (raceTrack == null) {
             context.getSource().sendSuccess(() -> Component.literal("You are not editing any RaceTrack."), false);
             return 0;

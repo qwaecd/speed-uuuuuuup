@@ -3,6 +3,8 @@ package com.qwaecd.speeduuuuuuup.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.qwaecd.speeduuuuuuup.data.ModData;
+import com.qwaecd.speeduuuuuuup.data.RaceTrackData;
 import com.qwaecd.speeduuuuuuup.race.RaceTrack;
 import com.qwaecd.speeduuuuuuup.race.RaceTrackManager;
 import net.minecraft.commands.CommandSourceStack;
@@ -44,7 +46,7 @@ public class RaceTrackCommands {
     }
 
     private static int createRaceTrack(CommandContext<CommandSourceStack> context, String name) {
-        if(RaceTrackManager.createRaceTrack(name, new RaceTrack(name))){
+        if(RaceTrackManager.createRaceTrack(name, new RaceTrack(name), context.getSource().getLevel())) {
             context.getSource().sendSuccess(() -> Component.literal("Successfully"),true);
             return 1;
         }
@@ -53,7 +55,7 @@ public class RaceTrackCommands {
     }
 
     private static int removeRaceTrack(CommandContext<CommandSourceStack> context, String name) {
-        if(RaceTrackManager.removeRaceTrack(name)){
+        if(RaceTrackManager.removeRaceTrack(name, context.getSource().getLevel())) {
             context.getSource().sendSuccess(() -> Component.literal("Removed " + name),true);
             return 1;
         }
@@ -63,8 +65,9 @@ public class RaceTrackCommands {
 
     private static int listRaceTracks(CommandContext<CommandSourceStack> context) {
         StringBuilder sb = new StringBuilder();
-        for(String name : RaceTrackManager.getAllRaceTracks().keySet()) {
-            RaceTrack raceTrack = RaceTrackManager.getRaceTrack(name);
+        RaceTrackData data = ModData.getRaceTrackData(context.getSource().getLevel());
+        for(String name : data.getRaceTracks().keySet()) {
+            RaceTrack raceTrack = RaceTrackManager.getRaceTrack(name, context.getSource().getLevel());
             if (raceTrack != null) {
                 sb.append("Name: ").append(raceTrack.getName()).append("\n");
             }
@@ -75,7 +78,7 @@ public class RaceTrackCommands {
     }
 
     private static int infoRaceTrack(CommandContext<CommandSourceStack> context, String name) {
-        RaceTrack raceTrack = RaceTrackManager.getRaceTrack(name);
+        RaceTrack raceTrack = RaceTrackManager.getRaceTrack(name, context.getSource().getLevel());
         StringBuilder sb = new StringBuilder();
         if (raceTrack != null) {
             sb.append(raceTrack);
@@ -87,7 +90,7 @@ public class RaceTrackCommands {
     }
 
     private static int infoPoint(CommandContext<CommandSourceStack> context, String raceTrackName, PointType type) {
-        RaceTrack raceTrack = RaceTrackManager.getRaceTrack(raceTrackName);
+        RaceTrack raceTrack = RaceTrackManager.getRaceTrack(raceTrackName, context.getSource().getLevel());
         if (raceTrack != null) {
             context.getSource().sendSuccess(() -> Component.literal("RaceTrack: " + raceTrackName), false);
             if (type == PointType.START && raceTrack.getStartRegion() != null) {

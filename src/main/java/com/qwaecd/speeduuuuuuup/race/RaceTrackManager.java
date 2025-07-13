@@ -1,34 +1,36 @@
 package com.qwaecd.speeduuuuuuup.race;
 
 
+import com.qwaecd.speeduuuuuuup.data.ModData;
+import com.qwaecd.speeduuuuuuup.data.RaceTrackData;
+import net.minecraft.server.level.ServerLevel;
+
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
 
 public class RaceTrackManager {
-    private static final Map<String, RaceTrack> RACES = new HashMap<>();
     private static String editingRaceTrack = null;
+    public static Runnable modifyCallback;
 
-    public static Boolean createRaceTrack(String name, RaceTrack race) {
-        if(RACES.containsKey(name)) return false;
-        RACES.put(name, race);
+    public static boolean createRaceTrack(String name, RaceTrack race, ServerLevel level) {
+        RaceTrackData data = ModData.getRaceTrackData(level);
+
+        if(data.containsRaceTrack(name)) return false;
+        data.putRaceTrack(name, race);
         return true;
     }
 
-    public static @Nullable RaceTrack getRaceTrack(String name) {
-        return RACES.get(name);
+    public static @Nullable RaceTrack getRaceTrack(String name, ServerLevel level) {
+        return ModData.getRaceTrackData(level).getRaceTrack(name);
     }
 
-    public static boolean removeRaceTrack(String name) {
-        if(RACES.containsKey(name)){
-            RACES.remove(name);
+    public static boolean removeRaceTrack(String name, ServerLevel level) {
+        RaceTrackData data = ModData.getRaceTrackData(level);
+        if(data.containsRaceTrack(name)){
+            data.removeRaceTrack(name);
+            data.setDirty();
             return true;
         }
         return false;
-    }
-
-    public static Map<String, RaceTrack> getAllRaceTracks() {
-        return RACES;
     }
 
     public static String getEditingRaceTrack() {
