@@ -13,6 +13,7 @@ public class RaceTrack {
     private Region endRegion;
     private List<Region> checkpoints;
     private ResourceKey<Level> dimension;
+    private boolean isActive = false;
 
     public RaceTrack(String name) {
         this.name = name;
@@ -121,5 +122,13 @@ public class RaceTrack {
         if(RaceTrackManager.modifyCallback != null) {
             RaceTrackManager.modifyCallback.run();
         }
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

@@ -1,5 +1,6 @@
 package com.qwaecd.speeduuuuuuup.init;
 
+import com.qwaecd.speeduuuuuuup.command.RaceCommands;
 import com.qwaecd.speeduuuuuuup.command.RacePointCommands;
 import com.qwaecd.speeduuuuuuup.command.RaceTrackCommands;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -15,5 +16,6 @@ public class InitCommands {
     public static void registerCommands(RegisterCommandsEvent event) {
         RaceTrackCommands.register(event.getDispatcher());
         RacePointCommands.register(event.getDispatcher());
+        RaceCommands.register(event.getDispatcher());
     }
 }

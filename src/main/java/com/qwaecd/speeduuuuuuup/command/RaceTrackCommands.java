@@ -20,7 +20,8 @@ public class RaceTrackCommands {
                                 Commands.literal("create")
                                     .requires(source -> source.hasPermission(4))
                                     .then(Commands.argument("name", StringArgumentType.string())
-                                            .executes(context -> createRaceTrack(context, StringArgumentType.getString(context, "name"))))
+                                            .executes(context -> createRaceTrack(context, StringArgumentType.getString(context, "name")))
+                                    )
                         )
                         .then(
                                 Commands.literal("remove")

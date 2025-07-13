@@ -21,7 +21,7 @@ public class CuboidRegion implements Region{
     }
 
     @Override
-    public AABB toAABB(BlockPos start, BlockPos end) {
+    public AABB toAABB() {
         return aabb;
     }
 
