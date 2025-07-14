@@ -8,11 +8,26 @@ public class CuboidRegion implements Region{
     private BlockPos start;
     private BlockPos end;
     private AABB aabb;
+    private Region.PointType pointType;
 
-    public CuboidRegion(BlockPos start, BlockPos end) {
-        this.start = start;
-        this.end = end;
-        this.aabb = new AABB(start, end);
+    private CuboidRegion(BlockPos start, BlockPos end) {
+        this.start = new BlockPos(
+            Math.min(start.getX(), end.getX()),
+            Math.min(start.getY(), end.getY()),
+            Math.min(start.getZ(), end.getZ())
+        );
+        this.end = new BlockPos(
+            Math.max(start.getX(), end.getX()) + 1,
+            Math.max(start.getY(), end.getY()) + 1,
+            Math.max(start.getZ(), end.getZ()) + 1
+        );
+        this.aabb = new AABB(this.start, this.end);
+        this.pointType = Region.PointType.CHECKPOINT;
+    }
+
+    public CuboidRegion(BlockPos start, BlockPos end, Region.PointType pointType) {
+        this(start, end);
+        this.pointType = pointType;
     }
 
     @Override
@@ -21,16 +36,17 @@ public class CuboidRegion implements Region{
     }
 
     @Override
+    public PointType getPointType() {
+        return this.pointType;
+    }
+
+    public void setPointType(PointType pointType) {
+        this.pointType = pointType;
+    }
+
+    @Override
     public AABB toAABB() {
         return aabb;
-    }
-
-    public BlockPos getEnd() {
-        return end;
-    }
-
-    public BlockPos getStart() {
-        return start;
     }
 
     @Override
@@ -50,6 +66,15 @@ public class CuboidRegion implements Region{
         BlockPos start = new BlockPos(tag.getInt("startX"), tag.getInt("startY"), tag.getInt("startZ"));
         BlockPos end = new BlockPos(tag.getInt("endX"), tag.getInt("endY"), tag.getInt("endZ"));
         return new CuboidRegion(start, end);
+    }
+    @Override
+    public BlockPos getStartPos() {
+        return start;
+    }
+
+    @Override
+    public BlockPos getEndPos() {
+        return end;
     }
 
     @Override

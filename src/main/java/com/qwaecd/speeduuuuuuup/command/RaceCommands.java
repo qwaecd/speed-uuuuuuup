@@ -50,17 +50,17 @@ public class RaceCommands {
             context.getSource().sendSuccess(()->Component.literal("Start or End region is not set"), false);
             return 0;
         }
-        RegionMarkerEntity startMarker = new RegionMarkerEntity(entityType, level, startRegion);
+        RegionMarkerEntity startMarker = new RegionMarkerEntity(entityType, level, startRegion, raceTrack);
         level.addFreshEntity(startMarker);
         startMarker.move();
-        RegionMarkerEntity endMarker = new RegionMarkerEntity(entityType, level, endRegion);
+        RegionMarkerEntity endMarker = new RegionMarkerEntity(entityType, level, endRegion, raceTrack);
         level.addFreshEntity(endMarker);
         endMarker.move();
 
 
         for (Region checkpoint : raceTrack.getCheckpoints()) {
             if (checkpoint == null) continue;
-            RegionMarkerEntity entity = new RegionMarkerEntity(entityType, level, checkpoint);
+            RegionMarkerEntity entity = new RegionMarkerEntity(entityType, level, checkpoint, raceTrack);
             level.addFreshEntity(entity);
             entity.move();
         }

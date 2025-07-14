@@ -1,6 +1,7 @@
 package com.qwaecd.speeduuuuuuup.entity;
 
 import com.qwaecd.speeduuuuuuup.race.CuboidRegion;
+import com.qwaecd.speeduuuuuuup.race.RaceTrack;
 import com.qwaecd.speeduuuuuuup.race.Region;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -14,24 +15,28 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 
 public class RegionMarkerEntity extends Entity {
-    protected String trackId;
-    protected int regionIndex;
+    protected RaceTrack raceTrack;
     protected Region.RegionType regionType;
     protected Region region;
-    protected static final EntityDataAccessor<String> TRACK_ID = SynchedEntityData.defineId(RegionMarkerEntity.class, EntityDataSerializers.STRING);
+    protected AABB synchedAABB;
+    private static final EntityDataAccessor<BlockPos> START_POS = SynchedEntityData.defineId(RegionMarkerEntity.class, EntityDataSerializers.BLOCK_POS);
+    private static final EntityDataAccessor<BlockPos> END_POS = SynchedEntityData.defineId(RegionMarkerEntity.class, EntityDataSerializers.BLOCK_POS);
 
-    public RegionMarkerEntity(EntityType<?> entityType, Level level, Region region) {
+    public RegionMarkerEntity(EntityType<?> entityType, Level level){
+        super(entityType, level);
+        this.noPhysics = true;
+        this.setInvulnerable(true);
+        this.setSyncedAABB(new BlockPos(0, 0, 0), new BlockPos(1, 1, 1));
+    }
+
+    public RegionMarkerEntity(EntityType<?> entityType, Level level, Region region, RaceTrack raceTrack) {
         super(entityType, level);
         this.noPhysics = true;
         this.region = region;
         this.regionType = region.getType();
+        this.raceTrack = raceTrack;
         this.setInvulnerable(true);
-        this.refreshDimensions();
-    }
-
-    public static RegionMarkerEntity create(EntityType<RegionMarkerEntity> entityType, Level level) {
-        Region defaultRegion = new CuboidRegion(new BlockPos(0, 0, 0), new BlockPos(1, 1, 1));
-        return new RegionMarkerEntity(entityType, level, defaultRegion);
+        this.setSyncedAABB(region.getStartPos(), region.getEndPos());
     }
 
     public void move() {
@@ -42,29 +47,14 @@ public class RegionMarkerEntity extends Entity {
         double minY = aabb.minY;
         double maxZ = aabb.maxZ;
         double minZ = aabb.minZ;
-        this.setPos((maxX + minX) / 2, (maxY + minY) / 2, (maxZ + minZ) / 2);
-        this.refreshDimensions();
+        this.setPos((maxX + minX) / 2, (maxY + minY) / 2 - 0.5D, (maxZ + minZ) / 2);
     }
-//    @Override
-//    public EntityDimensions getDimensions(Pose pose) {
-//        AABB aabb = this.region.toAABB();
-//        float xSize = (float) Math.abs(aabb.maxX - aabb.minX);
-//        float zSize = (float) Math.abs(aabb.maxZ - aabb.minZ);
-//        float width = Math.max(xSize, zSize);
-//        float height = (float) Math.abs(aabb.maxY - aabb.minY);
-//        return EntityDimensions.scalable(width, height);
-//    }
 
-    @Override
-    public void refreshDimensions() {
-        if (this.region != null) {
-            this.setBoundingBox(this.region.toAABB());
-        }
-    }
 
     @Override
     protected void defineSynchedData() {
-        this.entityData.define(TRACK_ID, "");
+        this.entityData.define(START_POS, BlockPos.ZERO);
+        this.entityData.define(END_POS, BlockPos.ZERO);
     }
 
     @Override
@@ -79,7 +69,6 @@ public class RegionMarkerEntity extends Entity {
         if (level.isClientSide) {
             return;
         }
-//        this.refreshDimensions();
         AABB bb = region.toAABB();
         level.getEntitiesOfClass(Player.class, bb).forEach(this::onPlayerInBox);
     }
@@ -87,8 +76,10 @@ public class RegionMarkerEntity extends Entity {
     @Override
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
         CompoundTag region = compoundTag.getCompound("region");
+        String pointTypeName = compoundTag.getString("point_type");
+        Region.PointType pointType = Region.PointType.valueOf(pointTypeName);
         if(region.isEmpty()) {
-            this.region = new CuboidRegion(new BlockPos(0, 0, 0), new BlockPos(1, 1, 1));
+            this.region = new CuboidRegion(new BlockPos(0, 0, 0), new BlockPos(1, 1, 1), pointType);
             return;
         }
         this.region = getRegionFromTag(compoundTag);
@@ -100,15 +91,21 @@ public class RegionMarkerEntity extends Entity {
         CompoundTag regionTag = this.region.toCompoundTag();
         compoundTag.put("region", regionTag);
         compoundTag.putString("type", this.regionType.name());
+        compoundTag.putString("point_type", this.region.getPointType().name());
     }
 
     public void onPlayerInBox(Player player) {
-        // Override this method to handle player entering the region
-        System.out.println("Player " + player.getName().getString() + " entered region: " + trackId + " at index: " + regionIndex);
+        System.out.println("Player " + player.getName().getString() + " entered region.");
     }
 
-    public Region getRegion() {
-        return this.region;
+    public void setSyncedAABB(BlockPos start, BlockPos end) {
+        this.entityData.set(START_POS, start);
+        this.entityData.set(END_POS, end);
+    }
+
+    public AABB getSynchedAABB() {
+        this.synchedAABB = new AABB(this.entityData.get(START_POS), this.entityData.get(END_POS));
+        return this.synchedAABB;
     }
 
     private static Region getRegionFromTag(CompoundTag tag) {

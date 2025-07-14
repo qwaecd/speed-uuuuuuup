@@ -25,8 +25,15 @@ public abstract class MarkerEntityRenderer<T extends RegionMarkerEntity> extends
     @Override
     public void render(T entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight){
         super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
-        AABB aabb = entity.getRegion().toAABB();
-        LevelRenderer.renderLineBox(poseStack, buffer.getBuffer(RenderType.LINES), aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ, 1.0F, 0.0F, 0.0F, 1.0F);
+
+        AABB aabb = entity.getSynchedAABB();
+
+        if (aabb != null) {
+            LevelRenderer.renderLineBox(poseStack, buffer.getBuffer(RenderType.LINES),
+                aabb.minX - entity.getX(), aabb.minY - entity.getY(), aabb.minZ - entity.getZ(),
+                aabb.maxX - entity.getX(), aabb.maxY - entity.getY(), aabb.maxZ - entity.getZ(),
+                1.0F, 0.0F, 0.0F, 1.0F);
+        }
     }
 
 }

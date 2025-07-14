@@ -14,7 +14,7 @@ import static com.qwaecd.speeduuuuuuup.SpeedUuuuuuup.MODID;
 public class RegisterEntities {
     public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, MODID);
 
-    public static final RegistryObject<EntityType<RegionMarkerEntity>> REGION_ENTITY = register(RegionMarkerEntity::create, "region_marker");
+    public static final RegistryObject<EntityType<RegionMarkerEntity>> REGION_ENTITY = register(RegionMarkerEntity::new, "region_marker");
 
     public static <T extends Entity> RegistryObject<EntityType<T>> register(EntityType.EntityFactory<T> entity, String name) {
         return ENTITIES.register(

@@ -82,10 +82,12 @@ public class RaceTrackData extends SavedData {
             raceTrack.setDescription(raceTag.getString("description"));
             if(!raceTag.getCompound("start_region").isEmpty()){
                 Region startRegion = getRegionFromTag(raceTag.getCompound("start_region"));
+                startRegion.setPointType(Region.PointType.START);
                 raceTrack.setStartRegion(startRegion);
             }
             if(!raceTag.getCompound("end_region").isEmpty()){
                 Region endRegion = getRegionFromTag(raceTag.getCompound("end_region"));
+                endRegion.setPointType(Region.PointType.END);
                 raceTrack.setEndRegion(endRegion);
             }
             raceTrack.setDimension(getDimensionFromNum(raceTag.getInt("dim")));
@@ -98,6 +100,7 @@ public class RaceTrackData extends SavedData {
                         int index = Integer.parseInt(checkpointKey.substring("checkpoint_".length()));
                         CompoundTag checkpointTag = checkpointsTag.getCompound(checkpointKey);
                         Region checkpointRegion = getRegionFromTag(checkpointTag);
+                        checkpointRegion.setPointType(Region.PointType.CHECKPOINT);
                         sortedCheckpoints.put(index, checkpointRegion);
                     } catch (NumberFormatException e) {
                         throw new IllegalArgumentException("Invalid checkpoint key: " + checkpointKey, e);

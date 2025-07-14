@@ -7,6 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.qwaecd.speeduuuuuuup.race.CuboidRegion;
 import com.qwaecd.speeduuuuuuup.race.RaceTrack;
 import com.qwaecd.speeduuuuuuup.race.RaceTrackManager;
+import com.qwaecd.speeduuuuuuup.race.Region;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
@@ -86,15 +87,15 @@ public class RacePointCommands {
 
         switch (kind) {
             case 0: // start
-                raceTrack.setStartRegion(new CuboidRegion(startPos, endPos));
+                raceTrack.setStartRegion(new CuboidRegion(startPos, endPos, Region.PointType.START));
                 context.getSource().sendSuccess(() -> Component.literal("Set start region for " + raceTrack.getName()), true);
                 break;
             case 1: // end
-                raceTrack.setEndRegion(new CuboidRegion(startPos, endPos));
+                raceTrack.setEndRegion(new CuboidRegion(startPos, endPos, Region.PointType.END));
                 context.getSource().sendSuccess(() -> Component.literal("Set end region for " + raceTrack.getName()), true);
                 break;
             case 2: // checkpoint
-                if (raceTrack.addCheckpointAt(raceTrack.getCheckpoints().size(), new CuboidRegion(startPos, endPos))) {
+                if (raceTrack.addCheckpointAt(raceTrack.getCheckpoints().size(), new CuboidRegion(startPos, endPos, Region.PointType.CHECKPOINT))) {
                     context.getSource().sendSuccess(() -> Component.literal("Added checkpoint to " + raceTrack.getName()), true);
                 } else {
                     context.getSource().sendSuccess(() -> Component.literal("Failed to add checkpoint."), false);
@@ -114,7 +115,7 @@ public class RacePointCommands {
             return 0;
         }
 
-        if (raceTrack.addCheckpointAt(index, new CuboidRegion(startPos, endPos))) {
+        if (raceTrack.addCheckpointAt(index, new CuboidRegion(startPos, endPos, Region.PointType.CHECKPOINT))) {
             context.getSource().sendSuccess(() -> Component.literal("Added checkpoint to " + raceTrack.getName()), true);
             return 1;
         } else {
