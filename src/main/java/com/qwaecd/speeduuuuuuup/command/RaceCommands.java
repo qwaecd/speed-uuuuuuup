@@ -43,6 +43,20 @@ public class RaceCommands {
                                                 .executes(context -> leaveRace(context, StringArgumentType.getString(context, "race_track_name"), context.getSource().getPlayer()))
                                         )
                         )
+                        .then(
+                                Commands.literal("run")
+                                        .requires(source -> source.hasPermission(4))
+                                        .then(Commands.argument("race_track_name", StringArgumentType.string())
+                                                .executes(context -> runRace(context, StringArgumentType.getString(context, "race_track_name")))
+                                        )
+                        )
+                        .then(
+                                Commands.literal("stop")
+                                        .requires(source -> source.hasPermission(4))
+                                        .then(Commands.argument("race_track_name", StringArgumentType.string())
+                                                .executes(context -> stopRace(context, StringArgumentType.getString(context, "race_track_name")))
+                                        )
+                        )
         );
     }
 
@@ -121,6 +135,36 @@ public class RaceCommands {
         RacePlayer racePlayer = new RacePlayer(player.getName().getString(), player.getUUID(), raceTrack);
         RaceManager.leaveRace(raceTrack, racePlayer);
         context.getSource().sendSuccess(() -> Component.literal("Player " + player.getName().getString() + " leaved."), false);
+        return 1;
+    }
+
+    private static int runRace(CommandContext<CommandSourceStack> context, String raceId) {
+        ServerLevel level = context.getSource().getLevel();
+        RaceTrackData data = ModData.getRaceTrackData(level);
+        RaceTrack raceTrack = data.getRaceTrack(raceId);
+        if (raceTrack == null) {
+            context.getSource().sendSuccess(() -> Component.literal("RaceTrack " + raceId + " does not exist."), false);
+            return 0;
+        }
+        raceTrack.isRacing = true;
+        context.getSource().sendSuccess(() -> Component.literal("RaceTrack " + raceId + " is now racing."), false);
+        return 1;
+    }
+
+    private static int stopRace(CommandContext<CommandSourceStack> context, String raceId) {
+        ServerLevel level = context.getSource().getLevel();
+        RaceTrackData data = ModData.getRaceTrackData(level);
+        RaceTrack raceTrack = data.getRaceTrack(raceId);
+        if (raceTrack == null) {
+            context.getSource().sendSuccess(() -> Component.literal("RaceTrack " + raceId + " does not exist."), false);
+            return 0;
+        }
+        raceTrack.isRacing = false;
+        for (RacePlayer racePlayer : RaceManager.getInstance().get(raceId)) {
+            if (racePlayer != null)
+                racePlayer.onFinish();
+        }
+        context.getSource().sendSuccess(() -> Component.literal("RaceTrack " + raceId + " is now stopped."), false);
         return 1;
     }
 }

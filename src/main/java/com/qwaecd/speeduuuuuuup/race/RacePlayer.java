@@ -40,7 +40,7 @@ public class RacePlayer {
     }
 
     public RaceStatus getRaceStatus() {
-        return RaceStatus.WAITING;
+        return this.raceStatus;
     }
 
     public void setRaceStatus(RaceStatus raceStatus){
@@ -69,6 +69,14 @@ public class RacePlayer {
 
     public void setLastCheckpointIndex(int lastCheckpointIndex) {
         this.lastCheckpointIndex = lastCheckpointIndex;
+    }
+
+    public void onFinish() {
+        this.raceStatus = RaceStatus.WAITING;
+        this.startTime = 0;
+        this.finishTime = 0;
+        this.lastCheckpointIndex = -1;
+        this.totalLaps = 1;
     }
 
     @Override

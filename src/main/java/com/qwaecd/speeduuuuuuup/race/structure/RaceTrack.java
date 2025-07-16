@@ -75,7 +75,7 @@ public class RaceTrack {
         callBack();
     }
 
-    public Boolean addCheckpointAt(int index, Region checkpoint) {
+    public boolean addCheckpointAt(int index, Region checkpoint) {
         if (index < 0 || index > checkpoints.size()) {
             return false;
         }
@@ -92,7 +92,7 @@ public class RaceTrack {
         return false;
     }
 
-    public Boolean removeCheckpointAt(int index) {
+    public boolean removeCheckpointAt(int index) {
         if (index < 0 || index >= checkpoints.size()) {
             return false;
         }

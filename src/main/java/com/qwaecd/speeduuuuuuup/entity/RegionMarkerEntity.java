@@ -67,7 +67,7 @@ public class RegionMarkerEntity extends Entity {
     public void tick() {
         super.tick();
         Level level = this.level();
-        if (level.isClientSide) {
+        if (level.isClientSide || !this.raceTrack.isRacing) {
             return;
         }
         AABB bb = region.toAABB();
@@ -96,7 +96,7 @@ public class RegionMarkerEntity extends Entity {
     }
 
     public void onPlayerInBox(Player player) {
-        if (player == null || player.isSpectator() || player.isCreative()) {
+        if (player == null || player.isSpectator()/* || player.isCreative()*/) {
             return;
         }
         if (this.raceTrack == null) {
@@ -110,7 +110,7 @@ public class RegionMarkerEntity extends Entity {
             return;
         }
         RaceHandler.racing(this.raceTrack, racePlayer, this.region);
-        System.out.println("Player " + player.getName().getString() + " entered region.");
+//        System.out.println("Player " + player.getName().getString() + " entered region.");
     }
 
     public void setSyncedAABB(BlockPos start, BlockPos end) {
