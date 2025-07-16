@@ -7,6 +7,8 @@ import com.qwaecd.speeduuuuuuup.data.ModData;
 import com.qwaecd.speeduuuuuuup.data.RaceTrackData;
 import com.qwaecd.speeduuuuuuup.entity.RegionMarkerEntity;
 import com.qwaecd.speeduuuuuuup.init.RegisterEntities;
+import com.qwaecd.speeduuuuuuup.race.RaceManager;
+import com.qwaecd.speeduuuuuuup.race.RacePlayer;
 import com.qwaecd.speeduuuuuuup.race.RaceTrack;
 import com.qwaecd.speeduuuuuuup.race.Region;
 import net.minecraft.commands.CommandSourceStack;
@@ -14,7 +16,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.phys.AABB;
+import net.minecraft.world.entity.player.Player;
 
 public class RaceCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -25,6 +27,20 @@ public class RaceCommands {
                                         .requires(source -> source.hasPermission(4))
                                         .then(Commands.argument("race_track_name", StringArgumentType.string())
                                                 .executes(context -> initRace(context, StringArgumentType.getString(context, "race_track_name")))
+                                        )
+                        )
+                        .then(
+                                Commands.literal("join")
+                                        .requires(source -> source.hasPermission(0))
+                                        .then(Commands.argument("race_track_name", StringArgumentType.string())
+                                                .executes(context -> joinRace(context, StringArgumentType.getString(context, "race_track_name"), context.getSource().getPlayer()))
+                                        )
+                        )
+                        .then(
+                                Commands.literal("leave")
+                                        .requires(source -> source.hasPermission(0))
+                                        .then(Commands.argument("race_track_name", StringArgumentType.string())
+                                                .executes(context -> leaveRace(context, StringArgumentType.getString(context, "race_track_name"), context.getSource().getPlayer()))
                                         )
                         )
         );
@@ -66,6 +82,45 @@ public class RaceCommands {
         }
         context.getSource().sendSuccess(()->Component.literal("Successfully"), true);
 //        raceTrack.setActive(true);
+        return 1;
+    }
+
+    private static int joinRace(CommandContext<CommandSourceStack> context, String raceId, Player player) {
+        ServerLevel level = context.getSource().getLevel();
+        RaceTrackData data = ModData.getRaceTrackData(level);
+        RaceTrack raceTrack = data.getRaceTrack(raceId);
+        if (player==null){
+            context.getSource().sendFailure(Component.literal("You must be a player"));
+            return 0;
+        }
+        if (raceTrack == null) {
+            context.getSource().sendSuccess(() -> Component.literal("RaceTrack " + raceId + " does not exist."), false);
+            return 0;
+        }
+        RacePlayer racePlayer = new RacePlayer(player.getName().getString(), player.getUUID(), raceTrack);
+        if (RaceManager.joinRace(raceTrack, racePlayer)){
+            context.getSource().sendSuccess(() -> Component.literal("Player " + player.getName().getString() + " joined."), false);
+            return 1;
+        }
+        context.getSource().sendSuccess(() -> Component.literal("Failed to join"), false);
+        return 0;
+    }
+
+    private static int leaveRace(CommandContext<CommandSourceStack> context, String raceId, Player player) {
+        ServerLevel level = context.getSource().getLevel();
+        RaceTrackData data = ModData.getRaceTrackData(level);
+        RaceTrack raceTrack = data.getRaceTrack(raceId);
+        if (player==null){
+            context.getSource().sendFailure(Component.literal("You must be a player"));
+            return 0;
+        }
+        if (raceTrack == null) {
+            context.getSource().sendSuccess(() -> Component.literal("RaceTrack " + raceId + " does not exist."), false);
+            return 0;
+        }
+        RacePlayer racePlayer = new RacePlayer(player.getName().getString(), player.getUUID(), raceTrack);
+        RaceManager.leaveRace(raceTrack, racePlayer);
+        context.getSource().sendSuccess(() -> Component.literal("Player " + player.getName().getString() + " leaved."), false);
         return 1;
     }
 }

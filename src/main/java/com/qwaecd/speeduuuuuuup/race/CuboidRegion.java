@@ -64,7 +64,7 @@ public class CuboidRegion implements Region{
 
     public static Region fromCompoundTag(CompoundTag tag) {
         BlockPos start = new BlockPos(tag.getInt("startX"), tag.getInt("startY"), tag.getInt("startZ"));
-        BlockPos end = new BlockPos(tag.getInt("endX"), tag.getInt("endY"), tag.getInt("endZ"));
+        BlockPos end = new BlockPos(tag.getInt("endX") - 1, tag.getInt("endY") - 1, tag.getInt("endZ") - 1);
         return new CuboidRegion(start, end);
     }
     @Override

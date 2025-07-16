@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class RaceTrackData extends SavedData {
-    private final Map<String, RaceTrack> raceTracks = new HashMap<>();
+    private static final Map<String, RaceTrack> raceTracks = new HashMap<>();
 
     public Map<String, RaceTrack> getRaceTracks() {
         return raceTracks;
@@ -25,7 +25,7 @@ public class RaceTrackData extends SavedData {
         setDirty();
     }
 
-    public RaceTrack getRaceTrack(String id) {
+    public static RaceTrack getRaceTrack(String id) {
         return raceTracks.get(id);
     }
 
@@ -38,7 +38,7 @@ public class RaceTrackData extends SavedData {
         return false;
     }
 
-    public boolean containsRaceTrack(String id) {
+    public static boolean containsRaceTrack(String id) {
         return raceTracks.containsKey(id);
     }
 
@@ -136,7 +136,7 @@ public class RaceTrackData extends SavedData {
         return 0;
     }
 
-    private static ResourceKey<Level> getDimensionFromNum(int num) {
+    public static ResourceKey<Level> getDimensionFromNum(int num) {
         switch (num) {
             case -1:
                 return Level.NETHER;

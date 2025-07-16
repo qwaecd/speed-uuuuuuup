@@ -1,6 +1,7 @@
 package com.qwaecd.speeduuuuuuup.entity;
 
 import com.qwaecd.speeduuuuuuup.race.CuboidRegion;
+import com.qwaecd.speeduuuuuuup.race.RaceManager;
 import com.qwaecd.speeduuuuuuup.race.RaceTrack;
 import com.qwaecd.speeduuuuuuup.race.Region;
 import net.minecraft.core.BlockPos;
@@ -95,6 +96,15 @@ public class RegionMarkerEntity extends Entity {
     }
 
     public void onPlayerInBox(Player player) {
+        if (player == null || player.isSpectator() || player.isCreative()) {
+            return;
+        }
+        if (this.raceTrack == null) {
+            return;
+        }
+        if (!RaceManager.inRace(this.raceTrack, player.getUUID())){
+            return;
+        }
         System.out.println("Player " + player.getName().getString() + " entered region.");
     }
 

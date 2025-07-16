@@ -5,6 +5,7 @@ import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class RaceTrack {
     private String name;
@@ -130,5 +131,17 @@ public class RaceTrack {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RaceTrack raceTrack)) return false;
+        return Objects.equals(name, raceTrack.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }
