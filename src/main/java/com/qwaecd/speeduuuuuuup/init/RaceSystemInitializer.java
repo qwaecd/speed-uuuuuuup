@@ -1,7 +1,7 @@
 package com.qwaecd.speeduuuuuuup.init;
 
-import com.qwaecd.speeduuuuuuup.race.RaceEventManager;
-import com.qwaecd.speeduuuuuuup.race.RaceMessageListener;
+import com.qwaecd.speeduuuuuuup.race.event.RaceEventManager;
+import com.qwaecd.speeduuuuuuup.race.event.RaceMessageListener;
 
 public class RaceSystemInitializer {
     public static void initialize() {

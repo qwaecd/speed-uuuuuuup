@@ -1,4 +1,8 @@
-package com.qwaecd.speeduuuuuuup.race;
+package com.qwaecd.speeduuuuuuup.race.event;
+
+import com.qwaecd.speeduuuuuuup.race.RacePlayer;
+import com.qwaecd.speeduuuuuuup.race.structure.Region;
+import com.qwaecd.speeduuuuuuup.race.structure.RaceTrack;
 
 public class RaceEvent {
     public enum EventType {
@@ -14,20 +18,20 @@ public class RaceEvent {
     private final RacePlayer racePlayer;
     private final Region region;
     private final int checkpointIndex;
-    private final int currentLap;
+    private final int totalLaps;
     private final long timestamp;
 
     public RaceEvent(EventType eventType, RaceTrack raceTrack, RacePlayer racePlayer, Region region) {
         this(eventType, raceTrack, racePlayer, region, -1, -1);
     }
 
-    public RaceEvent(EventType eventType, RaceTrack raceTrack, RacePlayer racePlayer, Region region, int checkpointIndex, int currentLap) {
+    public RaceEvent(EventType eventType, RaceTrack raceTrack, RacePlayer racePlayer, Region region, int checkpointIndex, int totalLaps) {
         this.eventType = eventType;
         this.raceTrack = raceTrack;
         this.racePlayer = racePlayer;
         this.region = region;
         this.checkpointIndex = checkpointIndex;
-        this.currentLap = currentLap;
+        this.totalLaps = totalLaps;
         this.timestamp = System.currentTimeMillis();
     }
 
@@ -51,8 +55,8 @@ public class RaceEvent {
         return checkpointIndex;
     }
 
-    public int getCurrentLap() {
-        return currentLap;
+    public int getTotalLaps() {
+        return totalLaps;
     }
 
     public long getTimestamp() {

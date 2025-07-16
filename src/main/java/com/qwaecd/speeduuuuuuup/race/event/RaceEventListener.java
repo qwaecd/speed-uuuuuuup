@@ -1,4 +1,4 @@
-package com.qwaecd.speeduuuuuuup.race;
+package com.qwaecd.speeduuuuuuup.race.event;
 
 @FunctionalInterface
 public interface RaceEventListener {

@@ -1,5 +1,7 @@
 package com.qwaecd.speeduuuuuuup.race;
 
+import com.qwaecd.speeduuuuuuup.race.structure.RaceTrack;
+
 import java.util.UUID;
 import java.util.Objects;
 

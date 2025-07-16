@@ -1,4 +1,4 @@
-package com.qwaecd.speeduuuuuuup.race;
+package com.qwaecd.speeduuuuuuup.race.structure;
 
 
 import com.qwaecd.speeduuuuuuup.data.ModData;

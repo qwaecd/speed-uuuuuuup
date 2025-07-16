@@ -3,7 +3,6 @@ package com.qwaecd.speeduuuuuuup;
 import com.mojang.logging.LogUtils;
 import com.qwaecd.speeduuuuuuup.init.RaceSystemInitializer;
 import com.qwaecd.speeduuuuuuup.init.RegisterEntities;
-import com.qwaecd.speeduuuuuuup.race.RaceEventManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;

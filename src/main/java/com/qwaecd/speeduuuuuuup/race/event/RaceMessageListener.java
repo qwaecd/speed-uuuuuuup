@@ -1,4 +1,4 @@
-package com.qwaecd.speeduuuuuuup.race;
+package com.qwaecd.speeduuuuuuup.race.event;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -27,10 +27,8 @@ public class RaceMessageListener implements RaceEventListener {
                 ));
             }
             case LAP_COMPLETE -> {
-                int currentLap = event.getCurrentLap();
-                int totalLaps = event.getRacePlayer().totalLaps + currentLap; // 重新计算总圈数
                 player.sendSystemMessage(Component.literal(
-                    "§b完成第 " + currentLap + " 圈！还剩 " + event.getRacePlayer().totalLaps + " 圈"
+                    "§b还剩 " + event.getRacePlayer().totalLaps + " 圈"
                 ));
             }
             case RACE_FINISH -> {

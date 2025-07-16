@@ -1,6 +1,10 @@
 package com.qwaecd.speeduuuuuuup.race;
 
 
+import com.qwaecd.speeduuuuuuup.race.event.RaceEvent;
+import com.qwaecd.speeduuuuuuup.race.event.RaceEventManager;
+import com.qwaecd.speeduuuuuuup.race.structure.RaceTrack;
+import com.qwaecd.speeduuuuuuup.race.structure.Region;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class RaceHandler {
@@ -55,7 +59,7 @@ public class RaceHandler {
                     racePlayer,
                     region,
                     checkpointIndex,
-                    racePlayer.getCurrentLap()
+                    racePlayer.totalLaps
                 );
                 RaceEventManager.fireEvent(checkpointEvent);
             }
@@ -68,7 +72,7 @@ public class RaceHandler {
                     racePlayer,
                     region,
                     -1,
-                    racePlayer.getCurrentLap()
+                    racePlayer.totalLaps
                 );
                 RaceEventManager.fireEvent(lapEvent);
             } else {

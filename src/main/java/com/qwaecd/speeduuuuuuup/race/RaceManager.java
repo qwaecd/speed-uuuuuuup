@@ -1,6 +1,7 @@
 package com.qwaecd.speeduuuuuuup.race;
 
 import com.qwaecd.speeduuuuuuup.data.RaceTrackData;
+import com.qwaecd.speeduuuuuuup.race.structure.RaceTrack;
 
 import javax.annotation.Nullable;
 import java.util.*;

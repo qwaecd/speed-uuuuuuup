@@ -1,6 +1,6 @@
 package com.qwaecd.speeduuuuuuup.data;
 
-import com.qwaecd.speeduuuuuuup.race.RaceTrackManager;
+import com.qwaecd.speeduuuuuuup.race.structure.RaceTrackManager;
 import net.minecraft.server.level.ServerLevel;
 
 import static com.qwaecd.speeduuuuuuup.SpeedUuuuuuup.MODID;

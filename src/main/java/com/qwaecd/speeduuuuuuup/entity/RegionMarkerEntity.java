@@ -1,6 +1,9 @@
 package com.qwaecd.speeduuuuuuup.entity;
 
 import com.qwaecd.speeduuuuuuup.race.*;
+import com.qwaecd.speeduuuuuuup.race.structure.CuboidRegion;
+import com.qwaecd.speeduuuuuuup.race.structure.RaceTrack;
+import com.qwaecd.speeduuuuuuup.race.structure.Region;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;

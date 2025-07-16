@@ -1,4 +1,4 @@
-package com.qwaecd.speeduuuuuuup.race;
+package com.qwaecd.speeduuuuuuup.race.structure;
 
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;

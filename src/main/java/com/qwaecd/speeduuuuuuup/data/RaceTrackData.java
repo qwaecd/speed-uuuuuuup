@@ -1,8 +1,8 @@
 package com.qwaecd.speeduuuuuuup.data;
 
-import com.qwaecd.speeduuuuuuup.race.CuboidRegion;
-import com.qwaecd.speeduuuuuuup.race.RaceTrack;
-import com.qwaecd.speeduuuuuuup.race.Region;
+import com.qwaecd.speeduuuuuuup.race.structure.CuboidRegion;
+import com.qwaecd.speeduuuuuuup.race.structure.RaceTrack;
+import com.qwaecd.speeduuuuuuup.race.structure.Region;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;

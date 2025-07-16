@@ -1,10 +1,10 @@
-package com.qwaecd.speeduuuuuuup.race;
+package com.qwaecd.speeduuuuuuup.race.structure;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.phys.AABB;
 
-public class CuboidRegion implements Region{
+public class CuboidRegion implements Region {
     private BlockPos start;
     private BlockPos end;
     private AABB aabb;
