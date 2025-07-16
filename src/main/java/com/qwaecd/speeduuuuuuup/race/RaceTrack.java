@@ -15,6 +15,7 @@ public class RaceTrack {
     private List<Region> checkpoints;
     private ResourceKey<Level> dimension;
     private boolean isActive = false;
+    public boolean isRacing = false;
 
     public RaceTrack(String name) {
         this.name = name;

@@ -2,6 +2,7 @@ package com.qwaecd.speeduuuuuuup.race;
 
 import com.qwaecd.speeduuuuuuup.data.RaceTrackData;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -100,6 +101,48 @@ public class RaceManager {
         }
 
         return true;
+    }
+
+    public static @Nullable RacePlayer getRacePlayer(RaceTrack raceTrack, UUID playerUUID) {
+        if (raceTrack == null || playerUUID == null) {
+            return null;
+        }
+
+        String raceTrackId = raceTrack.getName();
+
+        // 首先检查玩家是否在这个赛道中
+        String playerCurrentRaceTrack = playerToRaceTrackIndex.get(playerUUID);
+        if (!raceTrackId.equals(playerCurrentRaceTrack)) {
+            return null;
+        }
+
+        // 验证赛道是否有效
+        if (!isValidRaceTrack(raceTrackId)) {
+            // 赛道无效，清理索引
+            playerToRaceTrackIndex.remove(playerUUID);
+            return null;
+        }
+
+        // 获取赛道中的所有玩家
+        Map<String, Set<RacePlayer>> instance = getInstance();
+        Set<RacePlayer> players = instance.get(raceTrackId);
+
+        if (players == null || players.isEmpty()) {
+            // 数据不一致，清理索引
+            playerToRaceTrackIndex.remove(playerUUID);
+            return null;
+        }
+
+        // 遍历找到匹配的 RacePlayer
+        for (RacePlayer player : players) {
+            if (player.getUUID().equals(playerUUID)) {
+                return player;
+            }
+        }
+
+        // 如果没找到，说明数据不一致，清理索引
+        playerToRaceTrackIndex.remove(playerUUID);
+        return null;
     }
 
     private static boolean isValidRaceTrack(String raceTrackId) {

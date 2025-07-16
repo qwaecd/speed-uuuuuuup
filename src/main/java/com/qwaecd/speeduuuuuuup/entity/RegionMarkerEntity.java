@@ -1,9 +1,6 @@
 package com.qwaecd.speeduuuuuuup.entity;
 
-import com.qwaecd.speeduuuuuuup.race.CuboidRegion;
-import com.qwaecd.speeduuuuuuup.race.RaceManager;
-import com.qwaecd.speeduuuuuuup.race.RaceTrack;
-import com.qwaecd.speeduuuuuuup.race.Region;
+import com.qwaecd.speeduuuuuuup.race.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -105,6 +102,11 @@ public class RegionMarkerEntity extends Entity {
         if (!RaceManager.inRace(this.raceTrack, player.getUUID())){
             return;
         }
+        RacePlayer racePlayer = RaceManager.getRacePlayer(this.raceTrack, player.getUUID());
+        if (racePlayer == null) {
+            return;
+        }
+        RaceHandler.racing(this.raceTrack, racePlayer, this.region);
         System.out.println("Player " + player.getName().getString() + " entered region.");
     }
 
