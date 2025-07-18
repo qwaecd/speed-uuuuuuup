@@ -17,4 +17,13 @@ public class ModData {
         }
         return data;
     }
+
+    public static RaceResultData getRaceResultData(ServerLevel serverLevel) {
+        RaceResultData data = serverLevel.getDataStorage().computeIfAbsent(
+                RaceResultData::load,
+                RaceResultData::new,
+                MODID + "_race_result_data"
+        );
+        return data;
+    }
 }

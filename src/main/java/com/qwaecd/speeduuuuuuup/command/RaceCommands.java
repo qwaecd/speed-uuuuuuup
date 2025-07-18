@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.qwaecd.speeduuuuuuup.data.ModData;
+import com.qwaecd.speeduuuuuuup.data.RaceResultData;
 import com.qwaecd.speeduuuuuuup.data.RaceTrackData;
 import com.qwaecd.speeduuuuuuup.entity.RegionMarkerEntity;
 import com.qwaecd.speeduuuuuuup.init.RegisterEntities;
@@ -17,6 +18,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
+
+import java.util.List;
 
 public class RaceCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -55,6 +58,13 @@ public class RaceCommands {
                                         .requires(source -> source.hasPermission(4))
                                         .then(Commands.argument("race_track_name", StringArgumentType.string())
                                                 .executes(context -> stopRace(context, StringArgumentType.getString(context, "race_track_name")))
+                                        )
+                        )
+                        .then(
+                                Commands.literal("save")
+                                        .requires(source -> source.hasPermission(4))
+                                        .then(Commands.argument("race_track_name", StringArgumentType.string())
+                                                .executes(context -> saveResults(context, StringArgumentType.getString(context, "race_track_name")))
                                         )
                         )
         );
@@ -165,6 +175,28 @@ public class RaceCommands {
                 racePlayer.onFinish();
         }
         context.getSource().sendSuccess(() -> Component.literal("RaceTrack " + raceId + " is now stopped."), false);
+        return 1;
+    }
+
+    private static int saveResults(CommandContext<CommandSourceStack> context, String raceId) {
+        ServerLevel level = context.getSource().getLevel();
+        RaceTrackData data = ModData.getRaceTrackData(level);
+        RaceTrack raceTrack = data.getRaceTrack(raceId);
+        if (raceTrack == null) {
+            context.getSource().sendSuccess(() -> Component.literal("RaceTrack " + raceId + " does not exist."), false);
+            return 0;
+        }
+        List<RaceManager.PlayerResultCache> resultsCaches = RaceManager.getPlayerResultsCache(raceId);
+        if (resultsCaches != null){
+            RaceResultData raceResultData = ModData.getRaceResultData(level);
+            for (var playerResultCache : resultsCaches) {
+                if (playerResultCache == null) continue;
+                raceResultData.putWithCompare(raceId, playerResultCache.playerUUID(), playerResultCache.playerResult());
+            }
+            RaceManager.clearPlayerResultsCache(raceId);
+        }
+
+        context.getSource().sendSuccess(() -> Component.literal("Race result saved."), false);
         return 1;
     }
 }

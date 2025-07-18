@@ -1,6 +1,7 @@
 package com.qwaecd.speeduuuuuuup.race;
 
 
+import com.qwaecd.speeduuuuuuup.data.PlayerResult;
 import com.qwaecd.speeduuuuuuup.race.event.RaceEvent;
 import com.qwaecd.speeduuuuuuup.race.event.RaceEventManager;
 import com.qwaecd.speeduuuuuuup.race.structure.RaceTrack;
@@ -16,6 +17,8 @@ public class RaceHandler {
             case RACING -> isRacing(raceTrack, racePlayer, region);
             case COMPLETED -> isComplied(raceTrack, racePlayer, region);
             case DISQUALIFIED -> isDisqualified(raceTrack, racePlayer, region);
+            case FINISHED -> {
+            }
             default -> {
                 return;
             }
@@ -79,7 +82,6 @@ public class RaceHandler {
             } else {
                 racePlayer.setRaceStatus(RacePlayer.RaceStatus.COMPLETED);
                 racePlayer.setFinishTime(System.currentTimeMillis());
-                raceTrack.isRacing = false;
 
                 // 触发比赛完成事件
                 RaceEvent finishEvent = new RaceEvent(
@@ -94,7 +96,11 @@ public class RaceHandler {
     }
 
     private static void isComplied(RaceTrack raceTrack, RacePlayer racePlayer, Region region){
-        // 已完成状态，可能需要处理一些清理工作
+        long usedTime = racePlayer.getFinishTime() - racePlayer.getStartTime();
+        PlayerResult playerResult = new PlayerResult(racePlayer.getName(), usedTime);
+        RaceManager.PlayerResultCache cache = new RaceManager.PlayerResultCache(racePlayer.getUUID(), playerResult);
+        RaceManager.addPlayerResultCache(raceTrack.getName(), cache);
+        racePlayer.setRaceStatus(RacePlayer.RaceStatus.FINISHED);
     }
 
     private static void isDisqualified(RaceTrack raceTrack, RacePlayer racePlayer, Region region){

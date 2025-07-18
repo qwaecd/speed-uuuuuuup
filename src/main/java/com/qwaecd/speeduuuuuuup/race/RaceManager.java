@@ -1,5 +1,6 @@
 package com.qwaecd.speeduuuuuuup.race;
 
+import com.qwaecd.speeduuuuuuup.data.PlayerResult;
 import com.qwaecd.speeduuuuuuup.data.RaceTrackData;
 import com.qwaecd.speeduuuuuuup.race.structure.RaceTrack;
 
@@ -10,6 +11,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RaceManager {
     // RaceName -> RacePlayers
     private static Map<String, Set<RacePlayer>> INSTANCE = null;
+
+    private static final Map<String, List<PlayerResultCache>> playerResultsDataCache = new HashMap<>();
 
     // playerUUID -> RaceTrack name 的快速查找索引
     private static final Map<UUID, String> playerToRaceTrackIndex = new ConcurrentHashMap<>();
@@ -30,6 +33,33 @@ public class RaceManager {
             }
         }
         return INSTANCE;
+    }
+
+    public static void addPlayerResultCache(String raceTrackId, UUID playerUUID, PlayerResult playerResult) {
+        if (raceTrackId == null || raceTrackId.isEmpty() || playerResult == null) {
+            return;
+        }
+        List<PlayerResultCache> cacheList = playerResultsDataCache.getOrDefault(raceTrackId, new ArrayList<>());
+        cacheList.add(new PlayerResultCache(playerUUID, playerResult));
+    }
+
+    public static void addPlayerResultCache(String raceTrackId, PlayerResultCache playerResultCache){
+        if (raceTrackId == null || raceTrackId.isEmpty() || playerResultCache == null) {
+            return;
+        }
+        List<PlayerResultCache> cacheList = playerResultsDataCache.computeIfAbsent(raceTrackId, k -> new ArrayList<>());
+        cacheList.add(playerResultCache);
+    }
+
+    public static List<PlayerResultCache> getPlayerResultsCache(String raceTrackId) {
+        if (raceTrackId == null || raceTrackId.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return playerResultsDataCache.get(raceTrackId);
+    }
+
+    public static void clearPlayerResultsCache(String raceTrackId) {
+        playerResultsDataCache.remove(raceTrackId);
     }
 
     public static boolean joinRace(RaceTrack raceTrack, RacePlayer player){
@@ -185,5 +215,8 @@ public class RaceManager {
             playerToRaceTrackIndex.clear();
             cacheLastUpdateTime = 0;
         }
+    }
+
+    public record PlayerResultCache(UUID playerUUID, PlayerResult playerResult) {
     }
 }

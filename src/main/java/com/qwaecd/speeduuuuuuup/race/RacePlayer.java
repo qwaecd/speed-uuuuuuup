@@ -95,6 +95,7 @@ public class RacePlayer {
         WAITING,
         RACING,
         COMPLETED,
+        FINISHED,
         DISQUALIFIED;
     }
 }
