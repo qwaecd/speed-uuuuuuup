@@ -4,13 +4,18 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.qwaecd.speeduuuuuuup.data.ModData;
+import com.qwaecd.speeduuuuuuup.data.PlayerResult;
+import com.qwaecd.speeduuuuuuup.data.RaceResultData;
 import com.qwaecd.speeduuuuuuup.data.RaceTrackData;
 import com.qwaecd.speeduuuuuuup.race.structure.RaceTrack;
 import com.qwaecd.speeduuuuuuup.race.structure.RaceTrackManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.server.command.EnumArgument;
+
+import java.util.List;
 
 public class RaceTrackCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher){
@@ -41,6 +46,12 @@ public class RaceTrackCommands {
                                                 Commands.argument("name", StringArgumentType.string()).executes(context->infoRaceTrack(context, StringArgumentType.getString(context, "name")))
                                                         .then(Commands.argument("type", EnumArgument.enumArgument(PointType.class)).executes(context -> infoPoint(context, StringArgumentType.getString(context, "name"), context.getArgument("type", PointType.class))))
                                         )
+                        )
+                        .then(
+                                Commands.literal("rankinglist")
+                                        .requires(source -> source.hasPermission(0))
+                                        .then(Commands.argument("name", StringArgumentType.string())
+                                                .executes(context -> getRankingList(context, StringArgumentType.getString(context, "name"))))
                         )
 
         );
@@ -111,6 +122,25 @@ public class RaceTrackCommands {
         return 0;
     }
 
+    private static int getRankingList(CommandContext<CommandSourceStack> context, String raceTrackId) {
+        ServerLevel level = context.getSource().getLevel();
+        RaceTrack raceTrack = RaceTrackManager.getRaceTrack(raceTrackId, level);
+        if (raceTrack == null) {
+            context.getSource().sendSuccess(() -> Component.literal("RaceTrack " + raceTrackId + " does not exist."), false);
+        }
+        RaceResultData raceResultData = ModData.getRaceResultData(level);
+        int index = 0;
+        List<PlayerResult> list = raceResultData.getOrderedResults(raceTrackId);
+        context.getSource().sendSuccess(() -> Component.literal("Ranking list for " + raceTrackId + ":"), false);
+        while (index < Math.min(10, list.size())) {
+            PlayerResult playerResult = list.get(index);
+            int Num = index + 1;
+            context.getSource().sendSuccess(() -> Component.literal("No."+ Num + " " + playerResult.toString()),false);
+            index++;
+        }
+
+        return 1;
+    }
     enum PointType {
         START,
         END,

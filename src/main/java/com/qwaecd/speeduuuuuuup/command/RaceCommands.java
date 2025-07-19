@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.qwaecd.speeduuuuuuup.data.ModData;
 import com.qwaecd.speeduuuuuuup.data.RaceResultData;
 import com.qwaecd.speeduuuuuuup.data.RaceTrackData;
+import com.qwaecd.speeduuuuuuup.entity.MarkerEntityManager;
 import com.qwaecd.speeduuuuuuup.entity.RegionMarkerEntity;
 import com.qwaecd.speeduuuuuuup.init.RegisterEntities;
 import com.qwaecd.speeduuuuuuup.race.RaceManager;
@@ -91,21 +92,22 @@ public class RaceCommands {
             return 0;
         }
         RegionMarkerEntity startMarker = new RegionMarkerEntity(entityType, level, startRegion, raceTrack);
-        level.addFreshEntity(startMarker);
         startMarker.move();
+        MarkerEntityManager.addMarkerEntity(raceTrack.getName(), startMarker, level);
         RegionMarkerEntity endMarker = new RegionMarkerEntity(entityType, level, endRegion, raceTrack);
-        level.addFreshEntity(endMarker);
         endMarker.move();
+        MarkerEntityManager.addMarkerEntity(raceTrack.getName(), endMarker, level);
 
 
         for (Region checkpoint : raceTrack.getCheckpoints()) {
             if (checkpoint == null) continue;
             RegionMarkerEntity entity = new RegionMarkerEntity(entityType, level, checkpoint, raceTrack);
-            level.addFreshEntity(entity);
             entity.move();
+            MarkerEntityManager.addMarkerEntity(raceTrack.getName(), entity, level);
         }
+        MarkerEntityManager.addToLevel(raceTrack.getName());
         context.getSource().sendSuccess(()->Component.literal("Successfully"), true);
-//        raceTrack.setActive(true);
+        raceTrack.setActive(true);
         return 1;
     }
 
@@ -170,10 +172,15 @@ public class RaceCommands {
             return 0;
         }
         raceTrack.isRacing = false;
-        for (RacePlayer racePlayer : RaceManager.getInstance().get(raceId)) {
-            if (racePlayer != null)
-                racePlayer.onFinish();
+        raceTrack.setActive(false);
+        if (RaceManager.getInstance().get(raceId) != null){
+            for (RacePlayer racePlayer : RaceManager.getInstance().get(raceId)) {
+                if (racePlayer != null)
+                    racePlayer.onFinish();
+            }
         }
+        MarkerEntityManager.removeFromLevel(raceId);
+        saveResults(context, raceId);
         context.getSource().sendSuccess(() -> Component.literal("RaceTrack " + raceId + " is now stopped."), false);
         return 1;
     }
