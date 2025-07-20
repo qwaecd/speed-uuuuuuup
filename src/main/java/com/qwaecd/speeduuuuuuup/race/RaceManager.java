@@ -1,8 +1,12 @@
 package com.qwaecd.speeduuuuuuup.race;
 
+import com.qwaecd.speeduuuuuuup.data.ModData;
 import com.qwaecd.speeduuuuuuup.data.PlayerResult;
 import com.qwaecd.speeduuuuuuup.data.RaceTrackData;
 import com.qwaecd.speeduuuuuuup.race.structure.RaceTrack;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -193,14 +197,17 @@ public class RaceManager {
         if (validRaceTrackCache.contains(raceTrackId)) {
             return true;
         }
-
-        // 检查并更新缓存
-        boolean isValid = RaceTrackData.containsRaceTrack(raceTrackId);
-        if (isValid) {
-            validRaceTrackCache.add(raceTrackId);
+        ServerLevel level = ServerLifecycleHooks.getCurrentServer().getLevel(Level.OVERWORLD);
+        if (level != null) {
+            RaceTrackData data = ModData.getRaceTrackData(level);
+            // 检查并更新缓存
+            boolean isValid = data.containsRaceTrack(raceTrackId);
+            if (isValid) {
+                validRaceTrackCache.add(raceTrackId);
+            }
+            return isValid;
         }
-
-        return isValid;
+        return false;
     }
 
     // 清理索引的辅助方法

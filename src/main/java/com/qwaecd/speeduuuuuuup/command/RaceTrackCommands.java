@@ -78,7 +78,8 @@ public class RaceTrackCommands {
     }
 
     private static int createRaceTrack(CommandContext<CommandSourceStack> context, String name) {
-        if(RaceTrackManager.createRaceTrack(name, new RaceTrack(name), context.getSource().getLevel())) {
+        ServerLevel level = context.getSource().getLevel();
+        if(RaceTrackManager.createRaceTrack(name, new RaceTrack(name, level), level)) {
             context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.create.success"),true);
             return 1;
         }
@@ -97,6 +98,7 @@ public class RaceTrackCommands {
 
     private static int listRaceTracks(CommandContext<CommandSourceStack> context) {
         RaceTrackData data = ModData.getRaceTrackData(context.getSource().getLevel());
+        context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.list.title"), false);
         for(String name : data.getRaceTracks().keySet()) {
             RaceTrack raceTrack = RaceTrackManager.getRaceTrack(name, context.getSource().getLevel());
             if (raceTrack != null) {

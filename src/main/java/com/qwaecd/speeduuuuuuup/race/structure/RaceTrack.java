@@ -1,6 +1,7 @@
 package com.qwaecd.speeduuuuuuup.race.structure;
 
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
@@ -13,22 +14,23 @@ public class RaceTrack {
     private Region startRegion;
     private Region endRegion;
     private List<Region> checkpoints;
+    private ServerLevel level;
     private ResourceKey<Level> dimension;
     private int totalLaps;
     private boolean isActive = false;
     public boolean isRacing = false;
 
-    public RaceTrack(String name) {
-        this.name = name;
-        this.description = "";
-        this.dimension = Level.OVERWORLD;
-        this.checkpoints = new ArrayList<>();
-        this.totalLaps = 1;
-    }
+//    public RaceTrack(String name) {
+//        this.name = name;
+//        this.description = "";
+//        this.dimension = Level.OVERWORLD;
+//        this.checkpoints = new ArrayList<>();
+//        this.totalLaps = 1;
+//    }
 
-    public RaceTrack(String name, ResourceKey<Level> level) {
+    public RaceTrack(String name, ServerLevel level) {
         this.name = name;
-        this.dimension = level;
+        this.level = level;
         this.checkpoints = new ArrayList<>();
         this.totalLaps = 1;
     }
@@ -156,5 +158,9 @@ public class RaceTrack {
 
     public void setTotalLaps(int totalLaps) {
         this.totalLaps = totalLaps;
+    }
+
+    public ServerLevel getLevel() {
+        return level;
     }
 }

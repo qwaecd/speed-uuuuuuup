@@ -2,6 +2,7 @@
   "speed_uuuuuuup.command.racetrack.create.success": "RaceTrack created successfully",
   "speed_uuuuuuup.command.racetrack.create.already_exists": "RaceTrack %s already exists",
   "speed_uuuuuuup.command.racetrack.remove.success": "Removed %s",
+  "speed_uuuuuuup.command.racetrack.list.title": "Racetracks:",
   "speed_uuuuuuup.command.racetrack.list.name": "Name: %s",
   "speed_uuuuuuup.command.racetrack.not_exists": "%s does not exist",
   "speed_uuuuuuup.command.racetrack.info.racetrack": "RaceTrack: %s",

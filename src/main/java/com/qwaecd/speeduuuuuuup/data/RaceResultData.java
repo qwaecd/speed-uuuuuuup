@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class RaceResultData extends SavedData {
-    private static final Map<String, Map<UUID, PlayerResult>> raceResults = new HashMap<>();
+    private final Map<String, Map<UUID, PlayerResult>> raceResults = new HashMap<>();
 
     public void putWithCompare(String raceId, UUID playerUUID, PlayerResult playerResult){
         if (raceId == null || raceId.isEmpty() || playerUUID == null) {
@@ -98,8 +98,12 @@ public class RaceResultData extends SavedData {
                 results.put(UUID.fromString(playerId), playerResult);
             }
 
-            raceResults.put(raceId, results);
+            raceResultData.getRaceResults().put(raceId, results);
         }
         return raceResultData;
+    }
+
+    public Map<String, Map<UUID, PlayerResult>> getRaceResults() {
+        return raceResults;
     }
 }

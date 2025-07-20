@@ -2,6 +2,7 @@
   "speed_uuuuuuup.command.racetrack.create.success": "成功创建赛道",
   "speed_uuuuuuup.command.racetrack.create.already_exists": "赛道 %s 已存在",
   "speed_uuuuuuup.command.racetrack.remove.success": "已移除 %s",
+  "speed_uuuuuuup.command.racetrack.list.title": "赛道列表: ",
   "speed_uuuuuuup.command.racetrack.list.name": "名称: %s",
   "speed_uuuuuuup.command.racetrack.not_exists": "%s 不存在",
   "speed_uuuuuuup.command.racetrack.info.racetrack": "赛道: %s",

@@ -5,8 +5,11 @@ import com.qwaecd.speeduuuuuuup.race.structure.RaceTrack;
 import com.qwaecd.speeduuuuuuup.race.structure.Region;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +17,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class RaceTrackData extends SavedData {
-    private static final Map<String, RaceTrack> raceTracks = new HashMap<>();
+    private final Map<String, RaceTrack> raceTracks = new HashMap<>();
 
     public Map<String, RaceTrack> getRaceTracks() {
         return raceTracks;
@@ -25,7 +28,7 @@ public class RaceTrackData extends SavedData {
         setDirty();
     }
 
-    public static RaceTrack getRaceTrack(String id) {
+    public  RaceTrack getRaceTrack(String id) {
         return raceTracks.get(id);
     }
 
@@ -38,7 +41,7 @@ public class RaceTrackData extends SavedData {
         return false;
     }
 
-    public static boolean containsRaceTrack(String id) {
+    public  boolean containsRaceTrack(String id) {
         return raceTracks.containsKey(id);
     }
 
@@ -79,10 +82,11 @@ public class RaceTrackData extends SavedData {
     public static RaceTrackData load(CompoundTag compoundTag){
         RaceTrackData raceTrackData = new RaceTrackData();
         CompoundTag rootTag = compoundTag.getCompound("race_tracks");
+        ServerLevel level = ServerLifecycleHooks.getCurrentServer().getLevel(Level.OVERWORLD);
         for(String raceId : rootTag.getAllKeys()){
             if(raceId == null) continue;
             CompoundTag raceTag = rootTag.getCompound(raceId);
-            RaceTrack raceTrack = new RaceTrack(raceId);
+            RaceTrack raceTrack = new RaceTrack(raceId, level);
 
             raceTrack.setDescription(raceTag.getString("description"));
             if(!raceTag.getCompound("start_region").isEmpty()){
