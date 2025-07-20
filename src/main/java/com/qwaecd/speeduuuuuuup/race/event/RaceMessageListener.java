@@ -29,9 +29,10 @@ public class RaceMessageListener implements RaceEventListener {
                 ));
             }
             case LAP_COMPLETE -> {
+                int needLaps = event.getRaceTrack().getTotalLaps() - event.getRacePlayer().laps;
                 player.sendSystemMessage(Component.translatable(
                     "speed_uuuuuuup.race.message.lap_complete",
-                    event.getRacePlayer().totalLaps
+                        needLaps
                 ));
             }
             case RACE_FINISH -> {

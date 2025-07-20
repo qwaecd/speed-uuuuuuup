@@ -14,6 +14,7 @@ public class RaceTrack {
     private Region endRegion;
     private List<Region> checkpoints;
     private ResourceKey<Level> dimension;
+    private int totalLaps;
     private boolean isActive = false;
     public boolean isRacing = false;
 
@@ -22,12 +23,14 @@ public class RaceTrack {
         this.description = "";
         this.dimension = Level.OVERWORLD;
         this.checkpoints = new ArrayList<>();
+        this.totalLaps = 1;
     }
 
     public RaceTrack(String name, ResourceKey<Level> level) {
         this.name = name;
         this.dimension = level;
         this.checkpoints = new ArrayList<>();
+        this.totalLaps = 1;
     }
 
     public String getName() {
@@ -108,7 +111,8 @@ public class RaceTrack {
                 "description: " + description + "\n" +
                 "startRegion: " + startRegion + "\n"+
                 "endRegion: " + endRegion + "\n" +
-                "checkpoints: " + checkpoints.size();
+                "checkpoints: " + checkpoints.size() + "\n" +
+                "Laps: " + totalLaps;
     }
 
     public ResourceKey<Level> getDimension() {
@@ -144,5 +148,13 @@ public class RaceTrack {
     @Override
     public int hashCode() {
         return Objects.hash(name);
+    }
+
+    public int getTotalLaps() {
+        return totalLaps;
+    }
+
+    public void setTotalLaps(int totalLaps) {
+        this.totalLaps = totalLaps;
     }
 }

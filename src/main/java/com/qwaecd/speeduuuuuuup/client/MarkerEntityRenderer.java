@@ -28,7 +28,7 @@ public abstract class MarkerEntityRenderer<T extends RegionMarkerEntity> extends
 
         AABB aabb = entity.getSynchedAABB();
 
-        if (aabb != null) {
+        if (aabb != null && ModDebugger.showAllEntities) {
             LevelRenderer.renderLineBox(poseStack, buffer.getBuffer(RenderType.LINES),
                 aabb.minX - entity.getX(), aabb.minY - entity.getY(), aabb.minZ - entity.getZ(),
                 aabb.maxX - entity.getX(), aabb.maxY - entity.getY(), aabb.maxZ - entity.getZ(),

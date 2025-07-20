@@ -1,8 +1,11 @@
 package com.qwaecd.speeduuuuuuup.init;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.qwaecd.speeduuuuuuup.command.RaceCommands;
 import com.qwaecd.speeduuuuuuup.command.RacePointCommands;
 import com.qwaecd.speeduuuuuuup.command.RaceTrackCommands;
+import com.qwaecd.speeduuuuuuup.command.SpeedUuuuuuupCommands;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -14,8 +17,10 @@ public class InitCommands {
 
     @SubscribeEvent
     public static void registerCommands(RegisterCommandsEvent event) {
-        RaceTrackCommands.register(event.getDispatcher());
-        RacePointCommands.register(event.getDispatcher());
-        RaceCommands.register(event.getDispatcher());
+        var dispatcher = event.getDispatcher();
+        RaceTrackCommands.register(dispatcher);
+        RacePointCommands.register(dispatcher);
+        RaceCommands.register(dispatcher);
+        SpeedUuuuuuupCommands.register(dispatcher);
     }
 }

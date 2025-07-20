@@ -57,6 +57,11 @@ public class RaceTrackData extends SavedData {
                 raceTag.put("start_region", entry.getValue().getStartRegion().toCompoundTag());
             if(entry.getValue().getEndRegion() != null)
                 raceTag.put("end_region", entry.getValue().getEndRegion().toCompoundTag());
+            if(entry.getValue().getTotalLaps() > 0) {
+                raceTag.putInt("total_laps", entry.getValue().getTotalLaps());
+            } else {
+                raceTag.putInt("total_laps", 1);
+            }
 
             List<Region> checkpoints = entry.getValue().getCheckpoints();
             CompoundTag checkpointTag = new CompoundTag();
@@ -89,6 +94,11 @@ public class RaceTrackData extends SavedData {
                 Region endRegion = getRegionFromTag(raceTag.getCompound("end_region"));
                 endRegion.setPointType(Region.PointType.END);
                 raceTrack.setEndRegion(endRegion);
+            }
+            if(raceTag.contains("total_laps")) {
+                raceTrack.setTotalLaps(raceTag.getInt("total_laps"));
+            } else {
+                raceTrack.setTotalLaps(1);
             }
             raceTrack.setDimension(getDimensionFromNum(raceTag.getInt("dim")));
 

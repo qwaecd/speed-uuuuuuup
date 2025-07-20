@@ -13,7 +13,7 @@ public class RacePlayer {
     private long startTime;
     private long finishTime;
     private int lastCheckpointIndex;
-    public int totalLaps;
+    public int laps;
 
     public RacePlayer(String name, UUID uuid, RaceTrack raceTrack) {
         this.name = name;
@@ -22,9 +22,8 @@ public class RacePlayer {
         this.raceStatus = RaceStatus.WAITING;
         this.startTime = 0;
         this.finishTime = 0;
-
         this.lastCheckpointIndex = -1;
-        this.totalLaps = 1;
+        this.laps = 0;
     }
 
     public String getName() {
@@ -76,7 +75,7 @@ public class RacePlayer {
         this.startTime = 0;
         this.finishTime = 0;
         this.lastCheckpointIndex = -1;
-        this.totalLaps = 1;
+        this.laps = 0;
     }
 
     @Override
