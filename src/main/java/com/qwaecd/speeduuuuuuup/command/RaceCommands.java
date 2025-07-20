@@ -15,6 +15,7 @@ import com.qwaecd.speeduuuuuuup.race.structure.RaceTrack;
 import com.qwaecd.speeduuuuuuup.race.structure.Region;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
@@ -38,6 +39,11 @@ public class RaceCommands {
                                         .requires(source -> source.hasPermission(0))
                                         .then(Commands.argument("race_track_name", StringArgumentType.string())
                                                 .executes(context -> joinRace(context, StringArgumentType.getString(context, "race_track_name"), context.getSource().getPlayer()))
+                                                .then(
+                                                        Commands.argument("player_name", EntityArgument.player())
+                                                                .requires(source -> source.hasPermission(4))
+                                                                .executes(context -> joinRace(context, StringArgumentType.getString(context, "race_track_name"), EntityArgument.getPlayer(context, "player_name")))
+                                                )
                                         )
                         )
                         .then(
@@ -45,6 +51,11 @@ public class RaceCommands {
                                         .requires(source -> source.hasPermission(0))
                                         .then(Commands.argument("race_track_name", StringArgumentType.string())
                                                 .executes(context -> leaveRace(context, StringArgumentType.getString(context, "race_track_name"), context.getSource().getPlayer()))
+                                                .then(
+                                                        Commands.argument("player_name", EntityArgument.player())
+                                                                .requires(source -> source.hasPermission(4))
+                                                                .executes(context -> leaveRace(context, StringArgumentType.getString(context, "race_track_name"), EntityArgument.getPlayer(context, "player_name")))
+                                                )
                                         )
                         )
                         .then(
@@ -115,12 +126,12 @@ public class RaceCommands {
         ServerLevel level = context.getSource().getLevel();
         RaceTrackData data = ModData.getRaceTrackData(level);
         RaceTrack raceTrack = data.getRaceTrack(raceId);
-        if (player==null){
+        if (player == null){
             context.getSource().sendFailure(Component.translatable("speed_uuuuuuup.command.race.join.must_be_player"));
             return 0;
         }
         if (raceTrack == null) {
-            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.race.join.not_exists", raceId), false);
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.not_exists", raceId), false);
             return 0;
         }
         RacePlayer racePlayer = new RacePlayer(player.getName().getString(), player.getUUID(), raceTrack);
@@ -141,7 +152,7 @@ public class RaceCommands {
             return 0;
         }
         if (raceTrack == null) {
-            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.race.leave.not_exists", raceId), false);
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.not_exists", raceId), false);
             return 0;
         }
         RacePlayer racePlayer = new RacePlayer(player.getName().getString(), player.getUUID(), raceTrack);
@@ -155,8 +166,11 @@ public class RaceCommands {
         RaceTrackData data = ModData.getRaceTrackData(level);
         RaceTrack raceTrack = data.getRaceTrack(raceId);
         if (raceTrack == null) {
-            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.race.run.not_exists", raceId), false);
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.not_exists", raceId), false);
             return 0;
+        }
+        if (!raceTrack.isActive()) {
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.race.run.not_active", raceId), false);
         }
         raceTrack.isRacing = true;
         context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.race.run.success", raceId), false);
@@ -168,7 +182,7 @@ public class RaceCommands {
         RaceTrackData data = ModData.getRaceTrackData(level);
         RaceTrack raceTrack = data.getRaceTrack(raceId);
         if (raceTrack == null) {
-            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.race.stop.not_exists", raceId), false);
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.not_exists", raceId), false);
             return 0;
         }
         raceTrack.isRacing = false;
@@ -190,7 +204,7 @@ public class RaceCommands {
         RaceTrackData data = ModData.getRaceTrackData(level);
         RaceTrack raceTrack = data.getRaceTrack(raceId);
         if (raceTrack == null) {
-            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.race.save.not_exists", raceId), false);
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.not_exists", raceId), false);
             return 0;
         }
         List<RaceManager.PlayerResultCache> resultsCaches = RaceManager.getPlayerResultsCache(raceId);

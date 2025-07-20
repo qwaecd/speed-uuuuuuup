@@ -1,6 +1,7 @@
 package com.qwaecd.speeduuuuuuup.command;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.qwaecd.speeduuuuuuup.data.ModData;
@@ -53,7 +54,26 @@ public class RaceTrackCommands {
                                         .then(Commands.argument("name", StringArgumentType.string())
                                                 .executes(context -> getRankingList(context, StringArgumentType.getString(context, "name"))))
                         )
-
+                        .then(
+                                Commands.literal("description")
+                                        .requires(source -> source.hasPermission(4))
+                                        .then(Commands.argument("racetrack_name", StringArgumentType.string())
+                                                .then(
+                                                        Commands.argument("description", StringArgumentType.string()
+                                                )
+                                                                .executes(context -> setDescription(context, StringArgumentType.getString(context, "racetrack_name"), StringArgumentType.getString(context, "description"))))
+                                        )
+                        )
+                        .then(
+                                Commands.literal("laps")
+                                        .requires(source -> source.hasPermission(4))
+                                        .then(Commands.argument("racetrack_name", StringArgumentType.string())
+                                                .then(
+                                                        Commands.argument("laps", IntegerArgumentType.integer())
+                                                                .executes(context -> setLaps(context, StringArgumentType.getString(context, "racetrack_name"), IntegerArgumentType.getInteger(context, "laps")))
+                                                )
+                                        )
+                        )
         );
     }
 
@@ -71,12 +91,11 @@ public class RaceTrackCommands {
             context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.remove.success", name),true);
             return 1;
         }
-        context.getSource().sendSuccess(()-> Component.translatable("speed_uuuuuuup.command.racetrack.remove.not_exists", name), false);
+        context.getSource().sendSuccess(()-> Component.translatable("speed_uuuuuuup.command.racetrack.not_exists", name), false);
         return 0;
     }
 
     private static int listRaceTracks(CommandContext<CommandSourceStack> context) {
-        StringBuilder sb = new StringBuilder();
         RaceTrackData data = ModData.getRaceTrackData(context.getSource().getLevel());
         for(String name : data.getRaceTracks().keySet()) {
             RaceTrack raceTrack = RaceTrackManager.getRaceTrack(name, context.getSource().getLevel());
@@ -92,7 +111,7 @@ public class RaceTrackCommands {
         if (raceTrack != null) {
             context.getSource().sendSuccess(() -> Component.literal(raceTrack.toString()), false);
         } else {
-            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.info.not_exists", name), false);
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.not_exists", name), false);
         }
         return 1;
     }
@@ -114,7 +133,7 @@ public class RaceTrackCommands {
             }
             return 1;
         }
-        context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.ranking.not_exists", raceTrackName), false);
+        context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.not_exists", raceTrackName), false);
         return 0;
     }
 
@@ -122,7 +141,7 @@ public class RaceTrackCommands {
         ServerLevel level = context.getSource().getLevel();
         RaceTrack raceTrack = RaceTrackManager.getRaceTrack(raceTrackId, level);
         if (raceTrack == null) {
-            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.ranking.not_exists", raceTrackId), false);
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.not_exists", raceTrackId), false);
             return 0;
         }
         RaceResultData raceResultData = ModData.getRaceResultData(level);
@@ -138,7 +157,35 @@ public class RaceTrackCommands {
 
         return 1;
     }
-    enum PointType {
+    private static int setDescription(CommandContext<CommandSourceStack> context, String raceTrackName, String description) {
+        ServerLevel level = context.getSource().getLevel();
+        RaceTrack raceTrack = RaceTrackManager.getRaceTrack(raceTrackName, level);
+        if (raceTrack == null) {
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.not_exists", raceTrackName), false);
+            return 0;
+        }
+        raceTrack.setDescription(description);
+        context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.set_description.success", raceTrackName), true);
+        return 1;
+    }
+
+    private static int setLaps(CommandContext<CommandSourceStack> context, String raceTrackName, int laps) {
+        ServerLevel level = context.getSource().getLevel();
+        RaceTrack raceTrack = RaceTrackManager.getRaceTrack(raceTrackName, level);
+        if (raceTrack == null) {
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.not_exists", raceTrackName), false);
+            return 0;
+        }
+        if (laps < 1) {
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.set_laps.invalid"), false);
+            return 0;
+        }
+        raceTrack.setTotalLaps(laps);
+        context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.set_laps.success", raceTrackName, laps), true);
+        return 1;
+    }
+
+    private enum PointType {
         START,
         END,
         CHECKPOINT

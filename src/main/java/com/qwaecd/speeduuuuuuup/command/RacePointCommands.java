@@ -73,7 +73,7 @@ public class RacePointCommands {
             context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racepoint.edit.now_editing", name), false);
             return 1;
         }
-        context.getSource().sendSuccess(()-> Component.translatable("speed_uuuuuuup.command.racepoint.edit.not_exists", name), false);
+        context.getSource().sendSuccess(()-> Component.translatable("speed_uuuuuuup.command.racetrack.not_exists", name), false);
         return 0;
     }
 

@@ -62,13 +62,13 @@ public class RaceHandler {
                     racePlayer,
                     region,
                     checkpointIndex,
-                    racePlayer.totalLaps
+                    racePlayer.laps
                 );
                 RaceEventManager.fireEvent(checkpointEvent);
             }
         } else if (pointType == Region.PointType.END && passedAllCheckpoints(raceTrack, racePlayer)) {
-            if (racePlayer.totalLaps > 1){
-                racePlayer.totalLaps--;
+            if (raceTrack.getTotalLaps() > 1 && racePlayer.laps + 1 < raceTrack.getTotalLaps()){
+                racePlayer.laps++;
                 // 触发完成一圈事件
                 RaceEvent lapEvent = new RaceEvent(
                     RaceEvent.EventType.LAP_COMPLETE,
@@ -76,8 +76,9 @@ public class RaceHandler {
                     racePlayer,
                     region,
                     -1,
-                    racePlayer.totalLaps
+                    racePlayer.laps
                 );
+                racePlayer.setLastCheckpointIndex(-1);
                 RaceEventManager.fireEvent(lapEvent);
             } else {
                 racePlayer.setRaceStatus(RacePlayer.RaceStatus.COMPLETED);
