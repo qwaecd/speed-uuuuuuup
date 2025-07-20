@@ -70,10 +70,10 @@ public class RacePointCommands {
         RaceTrack raceTrack = RaceTrackManager.getRaceTrack(name, context.getSource().getLevel());
         if (raceTrack != null) {
             RaceTrackManager.setEditingRaceTrack(name);
-            context.getSource().sendSuccess(() -> Component.literal("Now editing " + name), false);
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racepoint.edit.now_editing", name), false);
             return 1;
         }
-        context.getSource().sendSuccess(()-> Component.literal("RaceTrack " + name + " does not exist."), false);
+        context.getSource().sendSuccess(()-> Component.translatable("speed_uuuuuuup.command.racepoint.edit.not_exists", name), false);
         return 0;
     }
 
@@ -81,28 +81,28 @@ public class RacePointCommands {
         //kind: 0 for start, 1 for end, 2 for checkpoint
         RaceTrack raceTrack = RaceTrackManager.getRaceTrack(RaceTrackManager.getEditingRaceTrack(), context.getSource().getLevel());
         if(raceTrack == null) {
-            context.getSource().sendSuccess(() -> Component.literal("You are not editing any RaceTrack."), false);
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racepoint.edit.not_editing"), false);
             return 0;
         }
 
         switch (kind) {
             case 0: // start
                 raceTrack.setStartRegion(new CuboidRegion(startPos, endPos, Region.PointType.START));
-                context.getSource().sendSuccess(() -> Component.literal("Set start region for " + raceTrack.getName()), true);
+                context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racepoint.add.start.success", raceTrack.getName()), true);
                 break;
             case 1: // end
                 raceTrack.setEndRegion(new CuboidRegion(startPos, endPos, Region.PointType.END));
-                context.getSource().sendSuccess(() -> Component.literal("Set end region for " + raceTrack.getName()), true);
+                context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racepoint.add.end.success", raceTrack.getName()), true);
                 break;
             case 2: // checkpoint
                 if (raceTrack.addCheckpointAt(raceTrack.getCheckpoints().size(), new CuboidRegion(startPos, endPos, Region.PointType.CHECKPOINT))) {
-                    context.getSource().sendSuccess(() -> Component.literal("Added checkpoint to " + raceTrack.getName()), true);
+                    context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racepoint.add.checkpoint.success", raceTrack.getName()), true);
                 } else {
-                    context.getSource().sendSuccess(() -> Component.literal("Failed to add checkpoint."), false);
+                    context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racepoint.add.checkpoint.failed"), false);
                 }
                 return 1;
             default:
-                context.getSource().sendSuccess(() -> Component.literal("Invalid kind of point."), false);
+                context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racepoint.add.invalid_kind"), false);
                 return 0;
         }
         return 1;
@@ -111,15 +111,15 @@ public class RacePointCommands {
     private static int addPointAt(CommandContext<CommandSourceStack> context, BlockPos startPos, BlockPos endPos, int index) {
         RaceTrack raceTrack = RaceTrackManager.getRaceTrack(RaceTrackManager.getEditingRaceTrack(), context.getSource().getLevel());
         if(raceTrack == null) {
-            context.getSource().sendSuccess(() -> Component.literal("You are not editing any RaceTrack."), false);
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racepoint.edit.not_editing"), false);
             return 0;
         }
 
         if (raceTrack.addCheckpointAt(index, new CuboidRegion(startPos, endPos, Region.PointType.CHECKPOINT))) {
-            context.getSource().sendSuccess(() -> Component.literal("Added checkpoint to " + raceTrack.getName()), true);
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racepoint.add.checkpoint.success", raceTrack.getName()), true);
             return 1;
         } else {
-            context.getSource().sendSuccess(() -> Component.literal("Failed to add checkpoint."), false);
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racepoint.add.checkpoint.failed"), false);
         }
         return 0;
     }
@@ -127,23 +127,23 @@ public class RacePointCommands {
     private static int removePoint(CommandContext<CommandSourceStack> context, int index) {
         RaceTrack raceTrack = RaceTrackManager.getRaceTrack(RaceTrackManager.getEditingRaceTrack(), context.getSource().getLevel());
         if (raceTrack == null) {
-            context.getSource().sendSuccess(() -> Component.literal("You are not editing any RaceTrack."), false);
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racepoint.edit.not_editing"), false);
             return 0;
         }
 
         if (index >= raceTrack.getCheckpoints().size()) {
-            context.getSource().sendSuccess(() -> Component.literal("Invalid checkpoint index."), false);
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racepoint.remove.invalid_index"), false);
             return 0;
         }
 
         if(index < 0){
             raceTrack.removeCheckpointAt(raceTrack.getCheckpoints().size()-1);
-            context.getSource().sendSuccess(() -> Component.literal("Removed last checkpoint from " + raceTrack.getName()), true);
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racepoint.remove.last.success", raceTrack.getName()), true);
             return 1;
         }
 
         raceTrack.getCheckpoints().remove(index);
-        context.getSource().sendSuccess(() -> Component.literal("Removed checkpoint at index " + index + " from " + raceTrack.getName()), true);
+        context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racepoint.remove.index.success", index, raceTrack.getName()), true);
         return 1;
     }
 }

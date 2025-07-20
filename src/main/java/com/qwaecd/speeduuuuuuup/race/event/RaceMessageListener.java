@@ -18,27 +18,31 @@ public class RaceMessageListener implements RaceEventListener {
 
         switch (event.getEventType()) {
             case RACE_START -> {
-                player.sendSystemMessage(Component.literal("§a比赛开始！加油！"));
+                player.sendSystemMessage(Component.translatable("speed_uuuuuuup.race.message.start"));
             }
             case CHECKPOINT_PASS -> {
                 int checkpointIndex = event.getCheckpointIndex();
-                player.sendSystemMessage(Component.literal(
-                    "§e通过检查点 " + (checkpointIndex + 1) + "/" + event.getRaceTrack().getCheckpoints().size()
+                player.sendSystemMessage(Component.translatable(
+                    "speed_uuuuuuup.race.message.checkpoint_pass",
+                    checkpointIndex + 1,
+                    event.getRaceTrack().getCheckpoints().size()
                 ));
             }
             case LAP_COMPLETE -> {
-                player.sendSystemMessage(Component.literal(
-                    "§b还剩 " + event.getRacePlayer().totalLaps + " 圈"
+                player.sendSystemMessage(Component.translatable(
+                    "speed_uuuuuuup.race.message.lap_complete",
+                    event.getRacePlayer().totalLaps
                 ));
             }
             case RACE_FINISH -> {
                 long raceTime = event.getTimestamp() - event.getRacePlayer().getStartTime();
-                player.sendSystemMessage(Component.literal(
-                    "§6恭喜！您完成了比赛！用时：" + formatTime(raceTime)
+                player.sendSystemMessage(Component.translatable(
+                    "speed_uuuuuuup.race.message.finish",
+                    formatTime(raceTime)
                 ));
             }
             case RACE_DISQUALIFY -> {
-                player.sendSystemMessage(Component.literal("§c您已被取消比赛资格！"));
+                player.sendSystemMessage(Component.translatable("speed_uuuuuuup.race.message.disqualify"));
             }
         }
     }

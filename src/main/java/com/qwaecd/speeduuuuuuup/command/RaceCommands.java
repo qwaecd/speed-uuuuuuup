@@ -76,11 +76,11 @@ public class RaceCommands {
         RaceTrackData data = ModData.getRaceTrackData(level);
         RaceTrack raceTrack = data.getRaceTrack(raceTrackName);
         if (raceTrack == null) {
-            context.getSource().sendFailure(Component.literal("failed to find"));
+            context.getSource().sendFailure(Component.translatable("speed_uuuuuuup.command.race.init.failed_to_find"));
             return 0;
         }
         if (raceTrack.isActive()) {
-            context.getSource().sendSuccess(()->Component.literal("Race is already active"), false);
+            context.getSource().sendSuccess(()->Component.translatable("speed_uuuuuuup.command.race.init.already_active"), false);
             return 0;
         }
         EntityType<RegionMarkerEntity> entityType = RegisterEntities.REGION_ENTITY.get();
@@ -88,7 +88,7 @@ public class RaceCommands {
         Region endRegion = raceTrack.getEndRegion();
 
         if (startRegion == null || endRegion == null) {
-            context.getSource().sendSuccess(()->Component.literal("Start or End region is not set"), false);
+            context.getSource().sendSuccess(()->Component.translatable("speed_uuuuuuup.command.race.init.region_not_set"), false);
             return 0;
         }
         RegionMarkerEntity startMarker = new RegionMarkerEntity(entityType, level, startRegion, raceTrack);
@@ -106,7 +106,7 @@ public class RaceCommands {
             MarkerEntityManager.addMarkerEntity(raceTrack.getName(), entity, level);
         }
         MarkerEntityManager.addToLevel(raceTrack.getName());
-        context.getSource().sendSuccess(()->Component.literal("Successfully"), true);
+        context.getSource().sendSuccess(()->Component.translatable("speed_uuuuuuup.command.race.init.success"), true);
         raceTrack.setActive(true);
         return 1;
     }
@@ -116,19 +116,19 @@ public class RaceCommands {
         RaceTrackData data = ModData.getRaceTrackData(level);
         RaceTrack raceTrack = data.getRaceTrack(raceId);
         if (player==null){
-            context.getSource().sendFailure(Component.literal("You must be a player"));
+            context.getSource().sendFailure(Component.translatable("speed_uuuuuuup.command.race.join.must_be_player"));
             return 0;
         }
         if (raceTrack == null) {
-            context.getSource().sendSuccess(() -> Component.literal("RaceTrack " + raceId + " does not exist."), false);
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.race.join.not_exists", raceId), false);
             return 0;
         }
         RacePlayer racePlayer = new RacePlayer(player.getName().getString(), player.getUUID(), raceTrack);
         if (RaceManager.joinRace(raceTrack, racePlayer)){
-            context.getSource().sendSuccess(() -> Component.literal("Player " + player.getName().getString() + " joined."), false);
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.race.join.success", player.getName().getString()), false);
             return 1;
         }
-        context.getSource().sendSuccess(() -> Component.literal("Failed to join"), false);
+        context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.race.join.failed"), false);
         return 0;
     }
 
@@ -137,16 +137,16 @@ public class RaceCommands {
         RaceTrackData data = ModData.getRaceTrackData(level);
         RaceTrack raceTrack = data.getRaceTrack(raceId);
         if (player==null){
-            context.getSource().sendFailure(Component.literal("You must be a player"));
+            context.getSource().sendFailure(Component.translatable("speed_uuuuuuup.command.race.leave.must_be_player"));
             return 0;
         }
         if (raceTrack == null) {
-            context.getSource().sendSuccess(() -> Component.literal("RaceTrack " + raceId + " does not exist."), false);
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.race.leave.not_exists", raceId), false);
             return 0;
         }
         RacePlayer racePlayer = new RacePlayer(player.getName().getString(), player.getUUID(), raceTrack);
         RaceManager.leaveRace(raceTrack, racePlayer);
-        context.getSource().sendSuccess(() -> Component.literal("Player " + player.getName().getString() + " leaved."), false);
+        context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.race.leave.success", player.getName().getString()), false);
         return 1;
     }
 
@@ -155,11 +155,11 @@ public class RaceCommands {
         RaceTrackData data = ModData.getRaceTrackData(level);
         RaceTrack raceTrack = data.getRaceTrack(raceId);
         if (raceTrack == null) {
-            context.getSource().sendSuccess(() -> Component.literal("RaceTrack " + raceId + " does not exist."), false);
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.race.run.not_exists", raceId), false);
             return 0;
         }
         raceTrack.isRacing = true;
-        context.getSource().sendSuccess(() -> Component.literal("RaceTrack " + raceId + " is now racing."), false);
+        context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.race.run.success", raceId), false);
         return 1;
     }
 
@@ -168,7 +168,7 @@ public class RaceCommands {
         RaceTrackData data = ModData.getRaceTrackData(level);
         RaceTrack raceTrack = data.getRaceTrack(raceId);
         if (raceTrack == null) {
-            context.getSource().sendSuccess(() -> Component.literal("RaceTrack " + raceId + " does not exist."), false);
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.race.stop.not_exists", raceId), false);
             return 0;
         }
         raceTrack.isRacing = false;
@@ -181,7 +181,7 @@ public class RaceCommands {
         }
         MarkerEntityManager.removeFromLevel(raceId);
         saveResults(context, raceId);
-        context.getSource().sendSuccess(() -> Component.literal("RaceTrack " + raceId + " is now stopped."), false);
+        context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.race.stop.success", raceId), false);
         return 1;
     }
 
@@ -190,7 +190,7 @@ public class RaceCommands {
         RaceTrackData data = ModData.getRaceTrackData(level);
         RaceTrack raceTrack = data.getRaceTrack(raceId);
         if (raceTrack == null) {
-            context.getSource().sendSuccess(() -> Component.literal("RaceTrack " + raceId + " does not exist."), false);
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.race.save.not_exists", raceId), false);
             return 0;
         }
         List<RaceManager.PlayerResultCache> resultsCaches = RaceManager.getPlayerResultsCache(raceId);
@@ -203,7 +203,7 @@ public class RaceCommands {
             RaceManager.clearPlayerResultsCache(raceId);
         }
 
-        context.getSource().sendSuccess(() -> Component.literal("Race result saved."), false);
+        context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.race.save.success"), false);
         return 1;
     }
 }

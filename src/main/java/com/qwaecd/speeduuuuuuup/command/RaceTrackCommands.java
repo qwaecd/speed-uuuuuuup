@@ -59,19 +59,19 @@ public class RaceTrackCommands {
 
     private static int createRaceTrack(CommandContext<CommandSourceStack> context, String name) {
         if(RaceTrackManager.createRaceTrack(name, new RaceTrack(name), context.getSource().getLevel())) {
-            context.getSource().sendSuccess(() -> Component.literal("Successfully"),true);
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.create.success"),true);
             return 1;
         }
-        context.getSource().sendSuccess(() -> Component.literal("RaceTrack " + name + " already exist."),true);
+        context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.create.already_exists", name),true);
         return 0;
     }
 
     private static int removeRaceTrack(CommandContext<CommandSourceStack> context, String name) {
         if(RaceTrackManager.removeRaceTrack(name, context.getSource().getLevel())) {
-            context.getSource().sendSuccess(() -> Component.literal("Removed " + name),true);
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.remove.success", name),true);
             return 1;
         }
-        context.getSource().sendSuccess(()-> Component.literal("RaceTrack " + name + " does not exist."), false);
+        context.getSource().sendSuccess(()-> Component.translatable("speed_uuuuuuup.command.racetrack.remove.not_exists", name), false);
         return 0;
     }
 
@@ -81,44 +81,40 @@ public class RaceTrackCommands {
         for(String name : data.getRaceTracks().keySet()) {
             RaceTrack raceTrack = RaceTrackManager.getRaceTrack(name, context.getSource().getLevel());
             if (raceTrack != null) {
-                sb.append("Name: ").append(raceTrack.getName()).append("\n");
+                context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.list.name", raceTrack.getName()), false);
             }
         }
-        sb.deleteCharAt(sb.length()-1);
-        context.getSource().sendSuccess(() -> Component.literal(sb.toString()), false);
         return 1;
     }
 
     private static int infoRaceTrack(CommandContext<CommandSourceStack> context, String name) {
         RaceTrack raceTrack = RaceTrackManager.getRaceTrack(name, context.getSource().getLevel());
-        StringBuilder sb = new StringBuilder();
         if (raceTrack != null) {
-            sb.append(raceTrack);
+            context.getSource().sendSuccess(() -> Component.literal(raceTrack.toString()), false);
         } else {
-            sb.append(name).append(" does not exist.");
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.info.not_exists", name), false);
         }
-        context.getSource().sendSuccess(() -> Component.literal(sb.toString()), false);
         return 1;
     }
 
     private static int infoPoint(CommandContext<CommandSourceStack> context, String raceTrackName, PointType type) {
         RaceTrack raceTrack = RaceTrackManager.getRaceTrack(raceTrackName, context.getSource().getLevel());
         if (raceTrack != null) {
-            context.getSource().sendSuccess(() -> Component.literal("RaceTrack: " + raceTrackName), false);
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.info.racetrack", raceTrackName), false);
             if (type == PointType.START && raceTrack.getStartRegion() != null) {
-                context.getSource().sendSuccess(() -> Component.literal("Start: " + raceTrack.getStartRegion()), false);
+                context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.info.start", raceTrack.getStartRegion().toString()), false);
             } else if (type == PointType.END && raceTrack.getEndRegion() != null) {
-                context.getSource().sendSuccess(() -> Component.literal("End: " + raceTrack.getEndRegion()), false);
+                context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.info.end", raceTrack.getEndRegion().toString()), false);
             }
 
             if (type == PointType.CHECKPOINT) {
                 for (var checkpoint : raceTrack.getCheckpoints()) {
-                    context.getSource().sendSuccess(() -> Component.literal("Checkpoint: " + checkpoint), false);
+                    context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.info.checkpoint", checkpoint.toString()), false);
                 }
             }
             return 1;
         }
-        context.getSource().sendSuccess(() -> Component.literal("RaceTrack " + raceTrackName + " does not exist."), false);
+        context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.ranking.not_exists", raceTrackName), false);
         return 0;
     }
 
@@ -126,16 +122,17 @@ public class RaceTrackCommands {
         ServerLevel level = context.getSource().getLevel();
         RaceTrack raceTrack = RaceTrackManager.getRaceTrack(raceTrackId, level);
         if (raceTrack == null) {
-            context.getSource().sendSuccess(() -> Component.literal("RaceTrack " + raceTrackId + " does not exist."), false);
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.ranking.not_exists", raceTrackId), false);
+            return 0;
         }
         RaceResultData raceResultData = ModData.getRaceResultData(level);
         int index = 0;
         List<PlayerResult> list = raceResultData.getOrderedResults(raceTrackId);
-        context.getSource().sendSuccess(() -> Component.literal("Ranking list for " + raceTrackId + ":"), false);
+        context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.ranking.title", raceTrackId), false);
         while (index < Math.min(10, list.size())) {
             PlayerResult playerResult = list.get(index);
             int Num = index + 1;
-            context.getSource().sendSuccess(() -> Component.literal("No."+ Num + " " + playerResult.toString()),false);
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.ranking.entry", Num, playerResult.toString()),false);
             index++;
         }
 
