@@ -193,9 +193,13 @@ public class RaceCommands {
                     racePlayer.onFinish();
             }
         }
-        MarkerEntityManager.removeFromLevel(raceId);
-        saveResults(context, raceId);
-        context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.race.stop.success", raceId), false);
+        boolean success = MarkerEntityManager.removeFromLevel(raceId);
+        if (success) {
+            saveResults(context, raceId);
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.race.stop.success", raceId), false);
+        } else {
+            context.getSource().sendSuccess(()->Component.translatable("speed_uuuuuuup.command.race.stop.fail"), false);
+        }
         return 1;
     }
 

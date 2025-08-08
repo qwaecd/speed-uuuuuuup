@@ -22,7 +22,6 @@ public class RegisterEntities {
                 () -> EntityType.Builder
                         .of(entity, MobCategory.MISC)
                         .sized(0.5F, 0.5F)
-                        .noSave()
                         .build(name)
         );
     }

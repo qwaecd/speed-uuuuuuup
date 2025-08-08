@@ -67,6 +67,12 @@ public class CuboidRegion implements Region {
         BlockPos end = new BlockPos(tag.getInt("endX") - 1, tag.getInt("endY") - 1, tag.getInt("endZ") - 1);
         return new CuboidRegion(start, end);
     }
+
+    public static Region fromCompoundTag(CompoundTag tag, PointType pointType) {
+        BlockPos start = new BlockPos(tag.getInt("startX"), tag.getInt("startY"), tag.getInt("startZ"));
+        BlockPos end = new BlockPos(tag.getInt("endX") - 1, tag.getInt("endY") - 1, tag.getInt("endZ") - 1);
+        return new CuboidRegion(start, end, pointType);
+    }
     @Override
     public BlockPos getStartPos() {
         return start;
@@ -87,5 +93,20 @@ public class CuboidRegion implements Region {
                 end.getX() + ", " +
                 end.getY() + ", " +
                 end.getZ()+"}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CuboidRegion that = (CuboidRegion) o;
+        return java.util.Objects.equals(start, that.start) &&
+               java.util.Objects.equals(end, that.end) &&
+               pointType == that.pointType;
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(start, end, pointType);
     }
 }

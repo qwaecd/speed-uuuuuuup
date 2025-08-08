@@ -93,9 +93,10 @@ public class RegionMarkerEntity extends Entity {
             this.region = new CuboidRegion(new BlockPos(0, 0, 0), new BlockPos(1, 1, 1), pointType);
             return;
         }
-        this.region = getRegionFromTag(regionTag);
+        this.region = getRegionFromTag(regionTag, pointType);
         this.regionType = this.region.getType();
         this.raceTrack = raceTrack;
+        this.setSyncedAABB(region.getStartPos(), region.getEndPos());
     }
 
     @Override
@@ -134,11 +135,11 @@ public class RegionMarkerEntity extends Entity {
         return this.synchedAABB;
     }
 
-    private static Region getRegionFromTag(CompoundTag tag) {
+    private static Region getRegionFromTag(CompoundTag tag, Region.PointType pointType) {
         Region.RegionType type = Region.RegionType.valueOf(tag.getString("type"));
         switch (type) {
             case CUBOID:
-                return CuboidRegion.fromCompoundTag(tag);
+                return CuboidRegion.fromCompoundTag(tag, pointType);
             default:
                 throw new IllegalArgumentException("Unknown region type: " + type);
         }

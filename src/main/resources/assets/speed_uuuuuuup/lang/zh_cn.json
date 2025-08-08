@@ -26,6 +26,7 @@
   "speed_uuuuuuup.command.race.run.success": "赛道 %s 现在正在比赛",
   "speed_uuuuuuup.command.race.run.not_active": "赛道 %s 还未初始化",
   "speed_uuuuuuup.command.race.stop.success": "赛道 %s 已停止比赛",
+  "speed_uuuuuuup.command.race.stop.fail": "移除所有已经存在的点位失败，请加载区块后重试。",
   "speed_uuuuuuup.command.race.save.success": "比赛结果已保存",
   "speed_uuuuuuup.command.racepoint.edit.now_editing": "正在编辑 %s",
   "speed_uuuuuuup.command.racepoint.edit.not_editing": "您没有在编辑任何赛道",
