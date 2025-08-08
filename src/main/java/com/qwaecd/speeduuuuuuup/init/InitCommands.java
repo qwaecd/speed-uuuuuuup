@@ -6,6 +6,7 @@ import com.qwaecd.speeduuuuuuup.command.RacePointCommands;
 import com.qwaecd.speeduuuuuuup.command.RaceTrackCommands;
 import com.qwaecd.speeduuuuuuup.command.SpeedUuuuuuupCommands;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -21,6 +22,10 @@ public class InitCommands {
         RaceTrackCommands.register(dispatcher);
         RacePointCommands.register(dispatcher);
         RaceCommands.register(dispatcher);
+    }
+    @SubscribeEvent
+    public static void registerClientCommands(RegisterClientCommandsEvent event) {
+        var dispatcher = event.getDispatcher();
         SpeedUuuuuuupCommands.register(dispatcher);
     }
 }

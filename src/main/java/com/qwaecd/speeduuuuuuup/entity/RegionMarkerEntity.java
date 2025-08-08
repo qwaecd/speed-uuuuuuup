@@ -3,12 +3,14 @@ package com.qwaecd.speeduuuuuuup.entity;
 import com.qwaecd.speeduuuuuuup.race.*;
 import com.qwaecd.speeduuuuuuup.race.structure.CuboidRegion;
 import com.qwaecd.speeduuuuuuup.race.structure.RaceTrack;
+import com.qwaecd.speeduuuuuuup.race.structure.RaceTrackManager;
 import com.qwaecd.speeduuuuuuup.race.structure.Region;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -67,6 +69,9 @@ public class RegionMarkerEntity extends Entity {
     public void tick() {
         super.tick();
         Level level = this.level();
+        if (this.raceTrack == null) {
+            return;
+        }
         if (level.isClientSide || !this.raceTrack.isRacing) {
             return;
         }
@@ -76,14 +81,21 @@ public class RegionMarkerEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
-        CompoundTag region = compoundTag.getCompound("region");
+        if (!(this.level() instanceof ServerLevel level)) {
+            return;
+        }
+        CompoundTag regionTag = compoundTag.getCompound("region");
         String pointTypeName = compoundTag.getString("point_type");
         Region.PointType pointType = Region.PointType.valueOf(pointTypeName);
-        if(region.isEmpty()) {
+        String raceTrackId = compoundTag.getString("race_track_id");
+        RaceTrack raceTrack = RaceTrackManager.getRaceTrack(raceTrackId, level);
+        if(regionTag.isEmpty()) {
             this.region = new CuboidRegion(new BlockPos(0, 0, 0), new BlockPos(1, 1, 1), pointType);
             return;
         }
-        this.region = getRegionFromTag(compoundTag);
+        this.region = getRegionFromTag(regionTag);
+        this.regionType = this.region.getType();
+        this.raceTrack = raceTrack;
     }
 
     @Override
@@ -93,15 +105,14 @@ public class RegionMarkerEntity extends Entity {
         compoundTag.put("region", regionTag);
         compoundTag.putString("type", this.regionType.name());
         compoundTag.putString("point_type", this.region.getPointType().name());
+        compoundTag.putString("race_track_id", this.raceTrack.getName());
     }
 
     public void onPlayerInBox(Player player) {
         if (player == null || player.isSpectator()/* || player.isCreative()*/) {
             return;
         }
-        if (this.raceTrack == null) {
-            return;
-        }
+
         if (!RaceManager.inRace(this.raceTrack, player.getUUID())){
             return;
         }

@@ -48,6 +48,15 @@ legacyForge {
 
 
 repositories {
+    maven {
+        url = "https://neoforged.forgecdn.net/releaeses"
+    }
+    maven {
+        url = "https://libraries.minecraft.net/"
+    }
+    maven {
+        url = "https://neoforged.forgecdn.net/mojang-meta"
+    }
      flatDir {
          dir 'libs'
      }
