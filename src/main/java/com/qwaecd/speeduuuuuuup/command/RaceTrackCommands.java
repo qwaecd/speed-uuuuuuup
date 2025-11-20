@@ -52,16 +52,24 @@ public class RaceTrackCommands {
                                 Commands.literal("rankinglist")
                                         .requires(source -> source.hasPermission(0))
                                         .then(Commands.argument("name", StringArgumentType.string())
-                                                .executes(context -> getRankingList(context, StringArgumentType.getString(context, "name"))))
+                                                .executes(context -> getRankingList(context, StringArgumentType.getString(context, "name")))
+                                                .then(Commands.argument("page", IntegerArgumentType.integer(0))
+                                                        .executes(context -> getRankingList(context, StringArgumentType.getString(context, "name"), IntegerArgumentType.getInteger(context, "page")))
+                                                )
+                                        )
+                                        .then(Commands.literal("clear").requires(source -> source.hasPermission(4))
+                                                .then(Commands.argument("name", StringArgumentType.string()))
+                                                .executes(context -> clearRankingList(context, StringArgumentType.getString(context, "name")))
+                                        )
                         )
                         .then(
                                 Commands.literal("description")
                                         .requires(source -> source.hasPermission(4))
                                         .then(Commands.argument("racetrack_name", StringArgumentType.string())
                                                 .then(
-                                                        Commands.argument("description", StringArgumentType.string()
+                                                        Commands.argument("description", StringArgumentType.string())
+                                                                .executes(context -> setDescription(context, StringArgumentType.getString(context, "racetrack_name"), StringArgumentType.getString(context, "description")))
                                                 )
-                                                                .executes(context -> setDescription(context, StringArgumentType.getString(context, "racetrack_name"), StringArgumentType.getString(context, "description"))))
                                         )
                         )
                         .then(
@@ -140,6 +148,12 @@ public class RaceTrackCommands {
     }
 
     private static int getRankingList(CommandContext<CommandSourceStack> context, String raceTrackId) {
+        return getRankingList(context, raceTrackId, 0);
+    }
+
+    private static int getRankingList(CommandContext<CommandSourceStack> context, String raceTrackId, int page) {
+        final int pageSize = 5;
+
         ServerLevel level = context.getSource().getLevel();
         RaceTrack raceTrack = RaceTrackManager.getRaceTrack(raceTrackId, level);
         if (raceTrack == null) {
@@ -147,18 +161,41 @@ public class RaceTrackCommands {
             return 0;
         }
         RaceResultData raceResultData = ModData.getRaceResultData(level);
-        int index = 0;
         List<PlayerResult> list = raceResultData.getOrderedResults(raceTrackId);
         context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.ranking.title", raceTrackId), false);
-        while (index < Math.min(10, list.size())) {
-            PlayerResult playerResult = list.get(index);
-            int Num = index + 1;
-            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.ranking.entry", Num, playerResult.toString()),false);
-            index++;
+        for (int i = page * pageSize; i < (page + 1) * pageSize; i++) {
+            if (i >= list.size()) {
+                break;
+            }
+            PlayerResult playerResult = list.get(i);
+            int Num = i + 1;
+            context.getSource().sendSuccess(() ->
+                    Component.translatable("speed_uuuuuuup.command.racetrack.ranking.entry", Num, playerResult.toString())
+                    ,false
+            );
         }
 
         return 1;
     }
+
+    private static int clearRankingList(CommandContext<CommandSourceStack> context, String raceTrackId) {
+        ServerLevel level = context.getSource().getLevel();
+        RaceTrack raceTrack = RaceTrackManager.getRaceTrack(raceTrackId, level);
+        if (raceTrack == null) {
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.not_exists", raceTrackId), false);
+            return 0;
+        }
+
+        RaceResultData raceResultData = ModData.getRaceResultData(level);
+        raceResultData.clearAllResults();
+        context.getSource().sendSuccess(() ->
+                        Component.translatable("speed_uuuuuuup.command.racetrack.ranking.clear_all", raceTrack.getName())
+                ,true
+        );
+
+        return 1;
+    }
+
     private static int setDescription(CommandContext<CommandSourceStack> context, String raceTrackName, String description) {
         ServerLevel level = context.getSource().getLevel();
         RaceTrack raceTrack = RaceTrackManager.getRaceTrack(raceTrackName, level);

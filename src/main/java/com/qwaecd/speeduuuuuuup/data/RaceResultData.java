@@ -52,6 +52,12 @@ public class RaceResultData extends SavedData {
         }
         return List.of();
     }
+
+    public void clearAllResults() {
+        raceResults.clear();
+        this.setDirty();
+    }
+
     @Override
     public CompoundTag save(CompoundTag compoundTag) {
         CompoundTag rootTag = new CompoundTag();
