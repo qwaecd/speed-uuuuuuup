@@ -96,5 +96,16 @@ public class RacePlayer {
         COMPLETED,
         FINISHED,
         DISQUALIFIED;
+
+        @Override
+        public String toString() {
+            return switch (this) {
+                case WAITING -> "Waiting";
+                case RACING -> "Racing";
+                case COMPLETED -> "Completed";
+                case FINISHED -> "Finished";
+                case DISQUALIFIED -> "Disqualified";
+            };
+        }
     }
 }

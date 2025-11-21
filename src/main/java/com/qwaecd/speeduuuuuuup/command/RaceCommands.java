@@ -1,6 +1,7 @@
 package com.qwaecd.speeduuuuuuup.command;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.qwaecd.speeduuuuuuup.data.ModData;
@@ -66,10 +67,20 @@ public class RaceCommands {
                                         )
                         )
                         .then(
+                                Commands.literal("check")
+                                        .requires(source -> source.hasPermission(0))
+                                        .then(Commands.argument("race_track_name", StringArgumentType.string())
+                                                .executes(context -> printPlayersInRace(context, StringArgumentType.getString(context, "race_track_name")))
+                                        )
+                        )
+                        .then(
                                 Commands.literal("stop")
                                         .requires(source -> source.hasPermission(4))
                                         .then(Commands.argument("race_track_name", StringArgumentType.string())
-                                                .executes(context -> stopRace(context, StringArgumentType.getString(context, "race_track_name")))
+                                                .executes(context -> stopRace(context, StringArgumentType.getString(context, "race_track_name"), false))
+                                                .then(Commands.argument("show_content", BoolArgumentType.bool())
+                                                        .executes(context -> stopRace(context, StringArgumentType.getString(context, "race_track_name"), BoolArgumentType.getBool(context, "show_content")))
+                                                )
                                         )
                         )
                         .then(
@@ -161,6 +172,25 @@ public class RaceCommands {
         return 1;
     }
 
+    private static int printPlayersInRace(CommandContext<CommandSourceStack> context, String raceId) {
+        ServerLevel level = context.getSource().getLevel();
+        RaceTrackData data = ModData.getRaceTrackData(level);
+        RaceTrack raceTrack = data.getRaceTrack(raceId);
+        if (raceTrack == null) {
+            context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.not_exists", raceId), false);
+            return 0;
+        }
+        List<RacePlayer> playersInRace = RaceManager.getPlayersInRace(raceTrack);
+        CommandSourceStack source = context.getSource();
+        source.sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.race.print_players.header", raceId), false);
+
+        for (RacePlayer racePlayer : playersInRace) {
+            source.sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.race.print_players.entry",
+                    racePlayer.getName(), racePlayer.getRaceStatus().toString()), false);
+        }
+        return 1;
+    }
+
     private static int runRace(CommandContext<CommandSourceStack> context, String raceId) {
         ServerLevel level = context.getSource().getLevel();
         RaceTrackData data = ModData.getRaceTrackData(level);
@@ -169,15 +199,15 @@ public class RaceCommands {
             context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.not_exists", raceId), false);
             return 0;
         }
-        if (!raceTrack.isActive()) {
+        boolean successStart = raceTrack.startRacing();
+        if (!successStart) {
             context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.race.run.not_active", raceId), false);
         }
-        raceTrack.isRacing = true;
         context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.race.run.success", raceId), false);
         return 1;
     }
 
-    private static int stopRace(CommandContext<CommandSourceStack> context, String raceId) {
+    private static int stopRace(CommandContext<CommandSourceStack> context, String raceId, boolean showContent) {
         ServerLevel level = context.getSource().getLevel();
         RaceTrackData data = ModData.getRaceTrackData(level);
         RaceTrack raceTrack = data.getRaceTrack(raceId);
@@ -185,7 +215,7 @@ public class RaceCommands {
             context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.racetrack.not_exists", raceId), false);
             return 0;
         }
-        raceTrack.isRacing = false;
+        raceTrack.setRacing(false);
         raceTrack.setActive(false);
         if (RaceManager.getInstance().get(raceId) != null){
             for (RacePlayer racePlayer : RaceManager.getInstance().get(raceId)) {
@@ -197,6 +227,11 @@ public class RaceCommands {
         if (success) {
             saveResults(context, raceId);
             context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.race.stop.success", raceId), false);
+
+            if (showContent) {
+                String content = raceTrack.runtime().getContent();
+                context.getSource().sendSuccess(() -> Component.translatable("speed_uuuuuuup.command.race.stop.show_content", content), false);
+            }
         } else {
             context.getSource().sendSuccess(()->Component.translatable("speed_uuuuuuup.command.race.stop.fail"), false);
         }

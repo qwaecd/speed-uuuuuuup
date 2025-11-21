@@ -72,7 +72,7 @@ public class RegionMarkerEntity extends Entity {
         if (this.raceTrack == null) {
             return;
         }
-        if (level.isClientSide || !this.raceTrack.isRacing) {
+        if (level.isClientSide || !this.raceTrack.isRacing()) {
             return;
         }
         AABB bb = region.toAABB();
@@ -81,6 +81,7 @@ public class RegionMarkerEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
+        //noinspection resource
         if (!(this.level() instanceof ServerLevel level)) {
             return;
         }

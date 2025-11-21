@@ -224,6 +224,18 @@ public class RaceManager {
         }
     }
 
+    public static List<RacePlayer> getPlayersInRace(RaceTrack raceTrack) {
+        if (!isValidRaceTrack(raceTrack.getName())) {
+            return Collections.emptyList();
+        }
+        Map<String, Set<RacePlayer>> instance = getInstance();
+        Set<RacePlayer> players = instance.get(raceTrack.getName());
+        if (players != null) {
+            return new ArrayList<>(players);
+        }
+        return Collections.emptyList();
+    }
+
     public record PlayerResultCache(UUID playerUUID, PlayerResult playerResult) {
     }
 }

@@ -1,9 +1,11 @@
 package com.qwaecd.speeduuuuuuup.race.structure;
 
+import com.qwaecd.speeduuuuuuup.race.runtime.RaceRuntime;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -18,7 +20,8 @@ public class RaceTrack {
     private ResourceKey<Level> dimension;
     private int totalLaps;
     private boolean isActive = false;
-    public boolean isRacing = false;
+    private boolean isRacing = false;
+    private RaceRuntime runtime = new RaceRuntime();
 
 //    public RaceTrack(String name) {
 //        this.name = name;
@@ -138,6 +141,33 @@ public class RaceTrack {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public boolean setRacing(boolean racing) {
+        if (!this.isActive && racing) {
+            // 未初始化而尝试开始比赛
+            return false;
+        }
+        this.isRacing = racing;
+        return true;
+    }
+
+    public boolean startRacing() {
+        if (!this.isActive || this.isRacing) {
+            return false;
+        }
+        this.isRacing = true;
+        this.runtime.reset();
+        return true;
+    }
+
+    public boolean isRacing() {
+        return this.isRacing;
+    }
+
+    @Nonnull
+    public RaceRuntime runtime() {
+        return this.runtime;
     }
 
     @Override

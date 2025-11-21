@@ -19,6 +19,6 @@ public record PlayerResult(String playerName, long finishTime) implements Compar
         long minutes = time / 60000;
         long seconds = (time % 60000) / 1000;
         long milliseconds = time % 1000;
-        return String.format("%d min:%02d s:%03d ms", minutes, seconds, milliseconds);
+        return String.format("%dmin : %02ds : %03dms", minutes, seconds, milliseconds);
     }
 }

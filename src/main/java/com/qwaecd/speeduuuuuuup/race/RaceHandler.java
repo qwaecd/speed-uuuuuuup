@@ -30,7 +30,7 @@ public class RaceHandler {
         if (pointType != Region.PointType.START) {
             return;
         }
-        if (raceTrack.isRacing){
+        if (raceTrack.isRacing()){
             racePlayer.setRaceStatus(RacePlayer.RaceStatus.RACING);
             racePlayer.setStartTime(System.currentTimeMillis());
 
@@ -100,6 +100,9 @@ public class RaceHandler {
         long usedTime = racePlayer.getFinishTime() - racePlayer.getStartTime();
         PlayerResult playerResult = new PlayerResult(racePlayer.getName(), usedTime);
         RaceManager.PlayerResultCache cache = new RaceManager.PlayerResultCache(racePlayer.getUUID(), playerResult);
+
+        raceTrack.runtime().addResult(playerResult);
+
         RaceManager.addPlayerResultCache(raceTrack.getName(), cache);
         racePlayer.setRaceStatus(RacePlayer.RaceStatus.FINISHED);
     }
